@@ -1,38 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:layout_width="match_parent"
-    android:layout_height="100dp">
+<merge>
 
-    <ImageView
-        tools:src="@tools:sample/avatars"
-        android:id="@+id/mini_album_art"
-        android:scaleType="centerCrop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:orientation="vertical"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mini_player"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="100dp"
+        android:orientation="horizontal">
 
-        <TextView
-            tools:text="Shigure Time"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
+        <ImageView
+            android:id="@+id/mini_album_art"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                tools:text="Shigure Time" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/play_pause_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="16dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Play Pause Button"
+            android:scaleType="fitXY"
+            android:src="@drawable/round_play_arrow_24" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/play_pause_btn"
-        android:text="Play"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-</LinearLayout>
+</merge>

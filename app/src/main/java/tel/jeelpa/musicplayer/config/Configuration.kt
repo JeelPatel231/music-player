@@ -18,5 +18,7 @@ val Int.toDp get() = (this / Resources.getSystem().displayMetrics.density).toInt
 
 
 object Configuration {
-    const val PEEK_HEIGHT = 100 // in dp
+    private const val BOTTOM_NAV_HEIGHT = 100
+    const val PEEK_HEIGHT = 2 * BOTTOM_NAV_HEIGHT // in dp
+    const val QUEUE_PEEK_HEIGHT = BOTTOM_NAV_HEIGHT // in dp
 }
