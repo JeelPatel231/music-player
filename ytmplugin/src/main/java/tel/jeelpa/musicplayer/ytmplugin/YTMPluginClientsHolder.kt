@@ -6,12 +6,16 @@ import tel.jeelpa.musicplayer.common.ClientsHolder
 import tel.jeelpa.musicplayer.common.clients.AlbumClient
 import tel.jeelpa.musicplayer.common.clients.ArtistClient
 import tel.jeelpa.musicplayer.common.clients.HomeFeedClient
+import tel.jeelpa.musicplayer.common.clients.StringMediaSource
 import tel.jeelpa.musicplayer.common.clients.TrackClient
 
 class YTMPluginClientsHolder : ClientsHolder {
     init {
         NewPipe.init(CustomDownloader.getInstance())
     }
+
+    override fun getName(): String =
+        "Youtube"
 
     override fun getHomeFeedClient(): HomeFeedClient =
         YouTube.getHomeFeedClient()
@@ -35,9 +39,12 @@ class Test {
             val a = YTMPluginClientsHolder()
 
             val album = a.getAlbumClient("https://music.youtube.com/playlist?list=OLAK5uy_l4UqNJCpAF3kNaV37LHdRc_A07MmVdiSU")
-            println( album.getName() )
-            album.getSongs(0,0).forEach(::println)
-            println( album.getAlbumArt() )
+            album.getSongs(0,0).onEach {
+                println( (it.getMediaSource().first() as StringMediaSource).url)
+                println(it.getName())
+                println(it.getCover())
+                println("---")
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package tel.jeelpa.musicplayer.common.clients
 
 interface TrackClient {
     fun getName(): String
+    fun getUrl(): String
     fun getMediaSource(): List<AbstractMediaSource>
     fun getRadio(): List<TrackClient>
     fun getCover(): String

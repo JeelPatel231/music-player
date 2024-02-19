@@ -1,5 +1,6 @@
 package tel.jeelpa.musicplayer.exoplayer
 
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -16,10 +17,8 @@ open class ExoplayerImpl(
         is Song.HttpUrl -> MediaItem.fromUri(url)
     }
 
-    override fun play() {
-        exoplayer.prepare()
+    override fun play() =
         exoplayer.play()
-    }
 
     override fun pause() =
         exoplayer.pause()
@@ -51,8 +50,11 @@ open class ExoplayerImpl(
     override fun getShuffle(): Boolean =
         exoplayer.shuffleModeEnabled
 
-    override fun getDuration() =
-        Duration.Known(exoplayer.duration)
+    override fun getDuration(): Duration =
+        when (val duration = exoplayer.duration) {
+            C.TIME_UNSET -> Duration.Unknown
+            else -> Duration.Known(duration)
+        }
 
     override fun setMediaItem(song: Song) =
         exoplayer.setMediaItem(song.toMediaItem())

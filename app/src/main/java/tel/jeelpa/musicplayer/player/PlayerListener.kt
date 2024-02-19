@@ -18,7 +18,7 @@ interface PlayerListener {
 }
 
 
-interface FlowPlayerListener : PlayerListener {
+interface FlowPlayerListener {
     val isPlaying: Flow<Boolean>
 
     val playbackState: Flow<PlaybackState>

@@ -13,6 +13,9 @@ class SCPluginClientsHolder : ClientsHolder {
         NewPipe.init(CustomDownloader.getInstance())
     }
 
+    override fun getName(): String =
+        "SoundCloud"
+
     override fun getHomeFeedClient(): HomeFeedClient =
         SoundCloud.getHomeFeedClient()
 

@@ -8,6 +8,7 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
         maven(url = "https://jitpack.io")
@@ -15,7 +16,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Music Player"
-include(":plugger")
+//include(":plugger")
 include(":common")
 include(":ytmplugin")
 include(":soundcloudplugin")

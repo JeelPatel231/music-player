@@ -1,6 +1,8 @@
 plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
+
+    id("com.github.johnrengelman.shadow")
 }
 
 java {

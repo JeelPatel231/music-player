@@ -5,18 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import tel.jeelpa.musicplayer.PlayerViewModel
+import tel.jeelpa.musicplayer.adapters.MediaItemAdapter
 import tel.jeelpa.musicplayer.databinding.SampleFragmentBinding
-import tel.jeelpa.musicplayer.player.AppPlayer
-import tel.jeelpa.musicplayer.player.models.Song
-import javax.inject.Inject
+import tel.jeelpa.musicplayer.utils.observeFlow
 
 @AndroidEntryPoint
 class SampleFragment : Fragment() {
     private var _binding: SampleFragmentBinding? = null
     private val binding get() = _binding!!
 
-    @Inject lateinit var player: AppPlayer
+    private val playerViewModel: PlayerViewModel by activityViewModels()
+    private val fragmentViewModel: SampleFragmentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,11 +31,20 @@ class SampleFragment : Fragment() {
     ): View {
         _binding = SampleFragmentBinding.inflate(inflater, container, false)
 
-        binding.btn.setOnClickListener {
-            val song =
-                Song.HttpUrl("https://file-examples.com/storage/fe63e96e0365c0e1e99a842/2017/11/file_example_MP3_5MG.mp3")
-            player.setMediaItem(song)
-            player.play()
+        val songAdapter = MediaItemAdapter {
+            lifecycleScope.launch {
+                playerViewModel.playTrack(it.url)
+            }
+        }
+
+        fragmentViewModel.getSong().observeFlow(this) {
+            songAdapter.submitList(it)
+        }
+
+        binding.songRecycler.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = songAdapter
         }
 
         return binding.root

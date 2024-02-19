@@ -3,6 +3,7 @@ package tel.jeelpa.musicplayer
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -11,23 +12,19 @@ import tel.jeelpa.musicplayer.databinding.ActivityMainBinding
 import tel.jeelpa.musicplayer.databinding.BottomSheetPlayerBinding
 import tel.jeelpa.musicplayer.databinding.BottomSheetQueueBinding
 import tel.jeelpa.musicplayer.databinding.MiniPlayerBinding
-import tel.jeelpa.musicplayer.player.AppPlayer
-import tel.jeelpa.musicplayer.player.FlowPlayerListener
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.ui.SampleFragment
 import tel.jeelpa.musicplayer.utils.observeFlow
-import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
 
-    @Inject
-    lateinit var player: AppPlayer
-
-    @Inject
-    lateinit var listener: FlowPlayerListener
+    private val playerViewModel: PlayerViewModel by viewModels()
+    private val player get() = playerViewModel.player
+    private val listener get() = playerViewModel.listener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -39,11 +36,9 @@ class MainActivity : AppCompatActivity() {
 
         supportFragmentManager.beginTransaction()
             .replace(binding.mainActivityContainer.id, sample)
-
             .commit()
 
         setupMiniPlayer()
-
     }
 
 
@@ -65,21 +60,20 @@ class MainActivity : AppCompatActivity() {
 
         bottomPlayerSheetBehavior
             .addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) { /* DO NOTHING */
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    /* DO NOTHING */
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     binding.bottomNav.translationY =
                         (binding.bottomNav.height * slideOffset).coerceAtLeast(0F)
                 }
-
             })
 
         val handleScrollCallback = object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     player.clearMediaItems()
-                    player.stop()
                 }
             }
 

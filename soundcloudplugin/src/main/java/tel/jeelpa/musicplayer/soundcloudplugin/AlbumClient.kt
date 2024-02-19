@@ -6,17 +6,26 @@ import tel.jeelpa.musicplayer.common.clients.AlbumClient
 import tel.jeelpa.musicplayer.common.clients.ArtistClient
 import tel.jeelpa.musicplayer.common.clients.TrackClient
 
-fun SoundcloudService.getAlbumClient(id: String): SCAlbumClient {
-    return SCAlbumClient(this, id)
+fun SoundcloudService.getAlbumClient(
+    id: String,
+    name: String? = null,
+    cover: String? = null,
+): SCAlbumClient {
+    return SCAlbumClient(this, id, name, cover)
 }
 
 class SCAlbumClient(
     private val service: SoundcloudService,
     private val id: String,
+    private val name: String?,
+    private val cover: String?,
 ): AlbumClient {
-    private val albumExtractor = service.getPlaylistExtractor(id)
+    private val albumExtractor by lazy { service.getPlaylistExtractor(id) }
+
+    override fun getUrl(): String = id
 
     override fun getName(): String {
+        if(name != null) return name
         albumExtractor.fetchPage()
         return albumExtractor.name
     }
@@ -24,10 +33,11 @@ class SCAlbumClient(
     override fun getAlbumArtists(): List<ArtistClient> {
         albumExtractor.fetchPage()
         return listOf(albumExtractor.uploaderUrl)
-            .map { service.getArtistClient(it) }
+            .map { service.getArtistClient(it, albumExtractor.uploaderName, albumExtractor.uploaderAvatarUrl) }
     }
 
     override fun getAlbumArt(): String {
+        if(cover != null) return cover
         albumExtractor.fetchPage()
         return albumExtractor.thumbnailUrl
     }
@@ -47,9 +57,8 @@ class SCAlbumClient(
 
 
     override fun getSongs(offset: Int, limit: Int): List<TrackClient> {
-
         return fetchAllPages()
             .onEach { println( it.name )}
-            .map { service.getTrackClient(it.url) }
+            .map { service.getTrackClient(it.url, it.name, it.thumbnailUrl) }
     }
 }

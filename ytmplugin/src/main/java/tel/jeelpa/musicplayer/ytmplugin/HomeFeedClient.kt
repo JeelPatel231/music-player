@@ -1,6 +1,5 @@
 package tel.jeelpa.musicplayer.ytmplugin
 
-import org.schabi.newpipe.extractor.StreamingService
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService
 import tel.jeelpa.musicplayer.common.clients.AlbumClient
 import tel.jeelpa.musicplayer.common.clients.ArtistClient
@@ -14,7 +13,7 @@ fun YoutubeService.getHomeFeedClient(): YTMHomeFeedClient {
 class YTMHomeFeedClient(
     private val service: YoutubeService,
 ): HomeFeedClient {
-    private val feedExtractor = service.getFeedExtractor("TODO: CHANGE")!!
+    private val feedExtractor by lazy { service.getFeedExtractor("TODO: CHANGE") }
 
     override fun getSongs(offset: Int, limit: Int): List<TrackClient> {
         feedExtractor.fetchPage()

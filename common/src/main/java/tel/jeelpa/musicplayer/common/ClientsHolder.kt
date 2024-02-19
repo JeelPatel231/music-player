@@ -6,6 +6,7 @@ import tel.jeelpa.musicplayer.common.clients.HomeFeedClient
 import tel.jeelpa.musicplayer.common.clients.TrackClient
 
 interface ClientsHolder {
+    fun getName(): String
     fun getHomeFeedClient(): HomeFeedClient
     fun getAlbumClient(id: String): AlbumClient
     fun getArtistClient(id: String): ArtistClient
