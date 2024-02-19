@@ -16,7 +16,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Music Player"
-//include(":plugger")
+include(":plugger:plugger")
 include(":common")
 include(":ytmplugin")
 include(":soundcloudplugin")

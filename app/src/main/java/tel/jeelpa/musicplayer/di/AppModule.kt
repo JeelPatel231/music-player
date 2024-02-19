@@ -64,7 +64,7 @@ class PrivateAppModule {
         // init the core loader
         val loader = AndroidPluginLoader(application)
         //
-        val fsPlConf = FilePluginConfig(application.filesDir.absolutePath)
+        val fsPlConf = FilePluginConfig(application.filesDir.absolutePath, ".plug")
         val apkPlConf = PluginConfiguration(packagePrefix = "tel.jeelpa.musicplayer")
         // create 2 loaders and merge them into 1
         return RepoComposer(
