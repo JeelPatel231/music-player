@@ -60,6 +60,7 @@ dependencies {
 
 
     // plugger
+    implementation("com.github.jeelpatel231:plugger:1.0.0")
 
     // TODO: REMOVE IN RELEASE
     implementation(project(":ytmplugin"))
