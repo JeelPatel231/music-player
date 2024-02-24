@@ -13,13 +13,12 @@ class SampleFragmentViewModel @Inject constructor(
     private val currentService: GetCurrentClient
 ) : ViewModel() {
 
-    fun getSong() = singleEmitOnIO {
+    val songs = singleEmitOnIO {
         currentService()
             .first() // first value of the flow
-            .getAlbumClient("https://music.youtube.com/playlist?list=OLAK5uy_l4UqNJCpAF3kNaV37LHdRc_A07MmVdiSU")
-//            .getAlbumClient("https://soundcloud.com/majorlazer/sets/peace-is-the-mission-extended")
+            .getHomeFeedClient()
             .getSongs(0, 0)
             .map { it.toTrack() }
     }
-}
 
+}

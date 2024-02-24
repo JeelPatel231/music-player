@@ -1,9 +1,9 @@
 package tel.jeelpa.musicplayer.player
 
+import tel.jeelpa.musicplayer.models.AppTrack
 import tel.jeelpa.musicplayer.player.models.Duration
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.player.models.RepeatMode
-import tel.jeelpa.musicplayer.player.models.Song
 
 
 interface AppPlayer {
@@ -21,6 +21,14 @@ interface AppPlayer {
     // getters
     fun getDuration(): Duration
 
+    fun getPosition(): Duration.Known
+
+
+    fun getProgress() = when (val dur = getDuration()) {
+        is Duration.Unknown -> 0F
+        is Duration.Known -> (getPosition().length / dur.length.toFloat()) * 100
+    }
+
     fun isPlaying(): Boolean
 
     fun getPlaybackState(): PlaybackState
@@ -29,14 +37,23 @@ interface AppPlayer {
 
     fun getShuffle() : Boolean
 
-    fun getCurrentMediaItem(): Song
+    fun getCurrentMediaItem(): AppTrack?
+
+    fun getCurrentMediaItemIndex(): Int
 
     fun getMediaItemCount(): Int
 
-    /// setters
-    fun setMediaItem(song: Song)
+    fun getTimeline(): List<AppTrack>
 
-    fun addMediaItem(song: Song, index: Int = 0)
+    // convenience has next and has previous methods
+    fun hasNextMediaItem(): Boolean
+
+    fun hasPreviousMediaItem(): Boolean
+
+    /// setters
+    fun setMediaItem(appTrack: AppTrack)
+
+    fun addMediaItem(appTrack: AppTrack, index: Int? = null)
 
     fun removeMediaItem(from: Int, to: Int)
 
@@ -48,4 +65,6 @@ interface AppPlayer {
 
     /// Playback Seek
     fun seekTo(positionMs: Long)
+
+    fun seekToMediaItem(index: Int)
 }

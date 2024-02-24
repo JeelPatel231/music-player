@@ -1,25 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="128dp"
+    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_marginHorizontal="8dp"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_margin="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:clipToPadding="false"
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/media_art"
+    <com.google.android.material.imageview.ShapeableImageView
         tools:src="@tools:sample/avatars"
-        android:layout_width="120dp"
-        android:layout_height="120dp" />
+        android:id="@+id/media_art"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:background="?attr/colorSurfaceContainer"
+        android:scaleType="fitCenter"
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small" />
 
     <TextView
+        tools:text="@tools:sample/lorem/random"
         android:id="@+id/media_title"
-        android:layout_marginTop="8dp"
-        tools:text="Infected Mushroom"
-        android:lines="3"
-        android:textAppearance="?attr/textAppearanceBodyMedium"
-        android:textStyle="bold"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lines="2"
+        android:minHeight="24sp" />
 
 </LinearLayout>

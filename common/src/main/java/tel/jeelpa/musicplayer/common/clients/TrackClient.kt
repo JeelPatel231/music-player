@@ -1,12 +1,12 @@
 package tel.jeelpa.musicplayer.common.clients
 
 interface TrackClient {
-    fun getName(): String
     fun getUrl(): String
-    fun getMediaSource(): List<AbstractMediaSource>
-    fun getRadio(): List<TrackClient>
-    fun getCover(): String
+    suspend fun getName(): String
+    suspend fun getMediaSource(): List<AbstractMediaSource>
+    suspend fun getRadio(): List<TrackClient>
+    suspend fun getCover(): String
 
-    fun getArtists():  List<ArtistClient>
-    fun getAlbum(): AlbumClient
+    suspend fun getArtists():  List<ArtistClient>
+    suspend fun getAlbum(): AlbumClient
 }

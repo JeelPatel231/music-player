@@ -1,21 +1,17 @@
 package tel.jeelpa.musicplayer.exoplayer
 
 import androidx.media3.common.C
-import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import tel.jeelpa.musicplayer.models.AppTrack
 import tel.jeelpa.musicplayer.player.AppPlayer
 import tel.jeelpa.musicplayer.player.models.Duration
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.player.models.RepeatMode
-import tel.jeelpa.musicplayer.player.models.Song
 
 open class ExoplayerImpl(
     private val exoplayer: ExoPlayer
 ) : AppPlayer {
-    private fun Song.toMediaItem(): MediaItem = when (this) {
-        is Song.HttpUrl -> MediaItem.fromUri(url)
-    }
 
     override fun play() =
         exoplayer.play()
@@ -56,27 +52,49 @@ open class ExoplayerImpl(
             else -> Duration.Known(duration)
         }
 
-    override fun setMediaItem(song: Song) =
-        exoplayer.setMediaItem(song.toMediaItem())
+    override fun getPosition(): Duration.Known =
+        Duration.Known(exoplayer.currentPosition)
 
-    override fun addMediaItem(song: Song, index: Int) =
-        exoplayer.addMediaItem(index, song.toMediaItem())
+    override fun setMediaItem(appTrack: AppTrack) =
+        exoplayer.setMediaItem(appTrack.toMediaItem())
+
+    override fun addMediaItem(appTrack: AppTrack, index: Int?) =
+        if(index == null) exoplayer.addMediaItem(appTrack.toMediaItem())
+        else exoplayer.addMediaItem(index, appTrack.toMediaItem())
 
     override fun removeMediaItem(from: Int, to: Int) =
         exoplayer.removeMediaItems(from, to)
 
-    override fun getCurrentMediaItem(): Song {
-        TODO("Not yet implemented")
-    }
+    override fun getCurrentMediaItem(): AppTrack? =
+        exoplayer.currentMediaItem?.toTrack()
+
+    override fun getCurrentMediaItemIndex(): Int =
+        exoplayer.currentMediaItemIndex
 
     override fun getMediaItemCount(): Int =
         exoplayer.mediaItemCount
+
+    override fun getTimeline(): List<AppTrack> =
+        (0 until exoplayer.mediaItemCount)
+//    (exoplayer.currentMediaItemIndex until exoplayer.mediaItemCount)
+        .map { exoplayer.getMediaItemAt(it) }
+        .map { it.toTrack() }
+
+    override fun hasNextMediaItem(): Boolean =
+        exoplayer.hasNextMediaItem()
+
+    override fun hasPreviousMediaItem(): Boolean =
+        exoplayer.hasPreviousMediaItem()
 
     override fun clearMediaItems() =
         exoplayer.clearMediaItems()
 
     override fun seekTo(positionMs: Long) =
         exoplayer.seekTo(positionMs)
+
+    override fun seekToMediaItem(index: Int) {
+        exoplayer.seekTo(index, 0)
+    }
 
     override fun next() =
         exoplayer.seekToNextMediaItem()

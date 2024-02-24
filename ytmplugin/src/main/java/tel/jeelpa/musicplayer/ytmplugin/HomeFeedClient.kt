@@ -15,17 +15,17 @@ class YTMHomeFeedClient(
 ): HomeFeedClient {
     private val feedExtractor by lazy { service.getFeedExtractor("TODO: CHANGE") }
 
-    override fun getSongs(offset: Int, limit: Int): List<TrackClient> {
+    override suspend fun getSongs(offset: Int, limit: Int): List<TrackClient> {
         feedExtractor.fetchPage()
         TODO("Not yet implemented")
     }
 
-    override fun getAlbums(offset: Int, limit: Int): List<AlbumClient> {
+    override suspend fun getAlbums(offset: Int, limit: Int): List<AlbumClient> {
         feedExtractor.fetchPage()
         TODO("Not yet implemented")
     }
 
-    override fun getArtists(count: Int, limit: Int): List<ArtistClient> {
+    override suspend fun getArtists(count: Int, limit: Int): List<ArtistClient> {
         feedExtractor.fetchPage()
         TODO("Not yet implemented")
     }

@@ -24,7 +24,7 @@ class SCTrackClient(
 ) : TrackClient {
     private val streamExtractor by lazy { service.getStreamExtractor(id) }
 
-    override fun getName(): String {
+    override suspend fun getName(): String {
         if(name != null) return name
         streamExtractor.fetchPage()
         return streamExtractor.name
@@ -32,31 +32,31 @@ class SCTrackClient(
 
     override fun getUrl(): String = id
 
-    override fun getMediaSource(): List<AbstractMediaSource> {
+    override suspend fun getMediaSource(): List<AbstractMediaSource> {
         streamExtractor.fetchPage()
         return streamExtractor.audioStreams.map { StringMediaSource(it.content) }
     }
 
-    override fun getRadio(): List<TrackClient> {
+    override suspend fun getRadio(): List<TrackClient> {
         streamExtractor.fetchPage()
         return streamExtractor.relatedItems?.items.orEmpty()
             .filter { it.infoType == InfoItem.InfoType.STREAM }
             .map { service.getTrackClient(it.url, it.name, it.thumbnailUrl) }
     }
 
-    override fun getCover(): String {
+    override suspend fun getCover(): String {
         if(cover != null) return cover
         streamExtractor.fetchPage()
         return streamExtractor.thumbnailUrl
     }
 
-    override fun getArtists(): List<ArtistClient> {
+    override suspend fun getArtists(): List<ArtistClient> {
         streamExtractor.fetchPage()
         return listOf(streamExtractor.uploaderUrl)
             .map { service.getArtistClient(it, streamExtractor.uploaderName, streamExtractor.uploaderAvatarUrl) }
     }
 
-    override fun getAlbum(): AlbumClient {
+    override suspend fun getAlbum(): AlbumClient {
         streamExtractor.fetchPage()
         TODO("Not yet implemented")
     }

@@ -4,4 +4,5 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-fun <T> singleEmitOnIO(callback: suspend () -> T) = flow { emit(callback()) }.flowOn(Dispatchers.IO)
+fun <T> singleEmitOnIO(callback: suspend () -> T) =
+    flow { emit(callback()) }.flowOn(Dispatchers.IO)

@@ -24,33 +24,33 @@ class SCArtistClient(
 
     override fun getUrl(): String = id
 
-    override fun getName(): String {
+    override suspend fun getName(): String {
         if (name != null) return name
         artistExtractor.fetchPage()
         return artistExtractor.name
     }
 
-    override fun getAvatar(): String {
+    override suspend fun getAvatar(): String {
         if(avatar != null) return avatar
         artistExtractor.fetchPage()
         return artistExtractor.avatarUrl
     }
 
-    override fun getSongs(offset: Int, limit: Int): List<TrackClient> {
+    override suspend fun getSongs(offset: Int, limit: Int): List<TrackClient> {
         artistExtractor.fetchPage()
         return artistExtractor.initialPage.items
             .filter { it.infoType == InfoItem.InfoType.STREAM }
             .map { service.getTrackClient(it.url, it.name, it.thumbnailUrl) }
     }
 
-    override fun getAlbums(offset: Int, limit: Int): List<AlbumClient> {
+    override suspend fun getAlbums(offset: Int, limit: Int): List<AlbumClient> {
         artistExtractor.fetchPage()
         return artistExtractor.initialPage.items
             .filter { it.infoType == InfoItem.InfoType.PLAYLIST }
             .map { service.getAlbumClient(it.url, it.name, it.thumbnailUrl) }
     }
 
-    override fun getSingles(offset: Int, limit: Int): List<AlbumClient> {
+    override suspend fun getSingles(offset: Int, limit: Int): List<AlbumClient> {
         return emptyList()
 //        artistExtractor.fetchPage()
 //        return artistExtractor.initialPage.items

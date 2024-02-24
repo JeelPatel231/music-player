@@ -29,21 +29,3 @@ class SCPluginClientsHolder : ClientsHolder {
         SoundCloud.getTrackClient(id)
 
 }
-
-
-class Test {
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val a = SCPluginClientsHolder()
-
-            val album = a.getAlbumClient("https://soundcloud.com/majorlazer/sets/peace-is-the-mission-extended")
-            println( album.getName() )
-            album.getSongs(0,0)
-                .onEach(::println)
-                .map { it.getMediaSource() }
-                .forEach(::println)
-            println( album.getAlbumArt() )
-        }
-    }
-}

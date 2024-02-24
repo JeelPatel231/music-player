@@ -23,25 +23,25 @@ class YTMAlbumClient(
 
     override fun getUrl(): String = id
 
-    override fun getName(): String {
+    override suspend fun getName(): String {
         if(name != null) return name
         albumExtractor.fetchPage()
         return albumExtractor.name
     }
 
-    override fun getAlbumArtists(): List<ArtistClient> {
+    override suspend fun getAlbumArtists(): List<ArtistClient> {
         albumExtractor.fetchPage()
         return listOf(albumExtractor.uploaderUrl)
             .map { service.getArtistClient(it, albumExtractor.name, albumExtractor.thumbnailUrl) }
     }
 
-    override fun getAlbumArt(): String {
+    override suspend fun getAlbumArt(): String {
         if(cover != null) return cover
         albumExtractor.fetchPage()
         return albumExtractor.thumbnailUrl
     }
 
-    override fun getSongs(offset: Int, limit: Int): List<TrackClient> {
+    override suspend fun getSongs(offset: Int, limit: Int): List<TrackClient> {
         albumExtractor.fetchPage()
         val page = if (offset == 0) {
             albumExtractor.initialPage

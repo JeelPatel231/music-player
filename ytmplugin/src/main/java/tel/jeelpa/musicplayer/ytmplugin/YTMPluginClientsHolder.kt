@@ -6,7 +6,6 @@ import tel.jeelpa.musicplayer.common.ClientsHolder
 import tel.jeelpa.musicplayer.common.clients.AlbumClient
 import tel.jeelpa.musicplayer.common.clients.ArtistClient
 import tel.jeelpa.musicplayer.common.clients.HomeFeedClient
-import tel.jeelpa.musicplayer.common.clients.StringMediaSource
 import tel.jeelpa.musicplayer.common.clients.TrackClient
 
 class YTMPluginClientsHolder : ClientsHolder {
@@ -32,19 +31,19 @@ class YTMPluginClientsHolder : ClientsHolder {
 }
 
 
-class Test {
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val a = YTMPluginClientsHolder()
-
-            val album = a.getAlbumClient("https://music.youtube.com/playlist?list=OLAK5uy_l4UqNJCpAF3kNaV37LHdRc_A07MmVdiSU")
-            album.getSongs(0,0).onEach {
-                println( (it.getMediaSource().first() as StringMediaSource).url)
-                println(it.getName())
-                println(it.getCover())
-                println("---")
-            }
-        }
-    }
-}
+//class Test {
+//    companion object {
+//        @JvmStatic
+//        fun main(args: Array<String>) {
+//            val a = YTMPluginClientsHolder()
+//
+//            val album = a.getAlbumClient("https://music.youtube.com/playlist?list=OLAK5uy_l4UqNJCpAF3kNaV37LHdRc_A07MmVdiSU")
+//            album.getSongs(0,0).onEach {
+//                println( (it.getMediaSource().first() as StringMediaSource).url)
+//                println(it.getName())
+//                println(it.getCover())
+//                println("---")
+//            }
+//        }
+//    }
+//}

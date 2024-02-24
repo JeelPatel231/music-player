@@ -74,10 +74,9 @@ class DataClassDiffCallback<TData : Any> : DiffUtil.ItemCallback<TData>() {
     }
 }
 
-abstract class GenericListAdapter<TData : Any, TBindingType : ViewBinding> :
-    ListAdapter<TData, GenericListAdapter.ViewHolder<TData, TBindingType>>(
-        DataClassDiffCallback<TData>()
-    ) {
+abstract class GenericListAdapter<TData : Any, TBindingType : ViewBinding>(
+    diffCallback:  DiffUtil.ItemCallback<TData> = DataClassDiffCallback()
+): ListAdapter<TData, GenericListAdapter.ViewHolder<TData, TBindingType>>(diffCallback) {
     class ViewHolder<TData, TBindingType : ViewBinding>(
         private val binding: TBindingType,
         private val callback: (TBindingType, TData, Int) -> Unit
