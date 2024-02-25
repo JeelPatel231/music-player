@@ -1,7 +1,7 @@
 package tel.jeelpa.musicplayer.player
 
 import kotlinx.coroutines.flow.Flow
-import tel.jeelpa.musicplayer.models.AppTrack
+import tel.jeelpa.musicplayer.models.EagerAppTrack
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.player.models.RepeatMode
 
@@ -25,11 +25,11 @@ interface FlowPlayerListener {
 
     val playbackState: Flow<PlaybackState>
 
-    val currentMediaItem: Flow<AppTrack?>
+    val currentMediaItem: Flow<EagerAppTrack?>
 
     val repeatMode: Flow<RepeatMode>
 
     val shuffle: Flow<Boolean>
 
-    val timeline: Flow<List<AppTrack>>
+    val timeline: Flow<List<EagerAppTrack>> // TODO: is it eager app track or it doesnt matter
 }

@@ -3,7 +3,7 @@ package tel.jeelpa.musicplayer.player.exoplayerimpl
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import tel.jeelpa.musicplayer.models.AppTrack
+import tel.jeelpa.musicplayer.models.EagerAppTrack
 import tel.jeelpa.musicplayer.player.AppPlayer
 import tel.jeelpa.musicplayer.player.models.Duration
 import tel.jeelpa.musicplayer.player.models.PlaybackState
@@ -55,17 +55,17 @@ open class ExoplayerImpl(
     override fun getPosition(): Duration.Known =
         Duration.Known(exoplayer.currentPosition)
 
-    override fun setMediaItem(appTrack: AppTrack) =
+    override fun setMediaItem(appTrack: EagerAppTrack) =
         exoplayer.setMediaItem(appTrack.toMediaItem())
 
-    override fun addMediaItem(appTrack: AppTrack, index: Int?) =
-        if(index == null) exoplayer.addMediaItem(appTrack.toMediaItem())
+    override fun addMediaItem(appTrack: EagerAppTrack, index: Int?) =
+        if (index == null) exoplayer.addMediaItem(appTrack.toMediaItem())
         else exoplayer.addMediaItem(index, appTrack.toMediaItem())
 
     override fun removeMediaItem(from: Int, to: Int) =
         exoplayer.removeMediaItems(from, to)
 
-    override fun getCurrentMediaItem(): AppTrack? =
+    override fun getCurrentMediaItem(): EagerAppTrack? =
         exoplayer.currentMediaItem?.toTrack()
 
     override fun getCurrentMediaItemIndex(): Int =
@@ -74,11 +74,10 @@ open class ExoplayerImpl(
     override fun getMediaItemCount(): Int =
         exoplayer.mediaItemCount
 
-    override fun getTimeline(): List<AppTrack> =
+    override fun getTimeline(): List<EagerAppTrack> =
         (0 until exoplayer.mediaItemCount)
-//    (exoplayer.currentMediaItemIndex until exoplayer.mediaItemCount)
-        .map { exoplayer.getMediaItemAt(it) }
-        .map { it.toTrack() }
+            .map { exoplayer.getMediaItemAt(it) }
+            .map { it.toTrack() }
 
     override fun hasNextMediaItem(): Boolean =
         exoplayer.hasNextMediaItem()

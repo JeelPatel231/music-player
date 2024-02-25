@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import coil.load
 import tel.jeelpa.musicplayer.databinding.ItemPlaylistItemBinding
-import tel.jeelpa.musicplayer.models.AppTrack
+import tel.jeelpa.musicplayer.models.EagerAppTrack
 
 
 object TrackDifferentiatorWithCurrent : DiffUtil.ItemCallback<TrackWithCurrent>() {
@@ -21,7 +21,7 @@ object TrackDifferentiatorWithCurrent : DiffUtil.ItemCallback<TrackWithCurrent>(
 }
 
 typealias TrackWithCurrent = Pair<
-        AppTrack,   /* Track Info */
+        EagerAppTrack,   /* Track Info */
         Boolean,    /* Is Currently Playing? */
         >
 

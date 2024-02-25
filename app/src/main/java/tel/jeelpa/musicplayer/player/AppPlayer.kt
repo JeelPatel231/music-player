@@ -1,6 +1,6 @@
 package tel.jeelpa.musicplayer.player
 
-import tel.jeelpa.musicplayer.models.AppTrack
+import tel.jeelpa.musicplayer.models.EagerAppTrack
 import tel.jeelpa.musicplayer.player.models.Duration
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.player.models.RepeatMode
@@ -37,13 +37,13 @@ interface AppPlayer {
 
     fun getShuffle() : Boolean
 
-    fun getCurrentMediaItem(): AppTrack?
+    fun getCurrentMediaItem(): EagerAppTrack?
 
     fun getCurrentMediaItemIndex(): Int
 
     fun getMediaItemCount(): Int
 
-    fun getTimeline(): List<AppTrack>
+    fun getTimeline(): List<EagerAppTrack>
 
     // convenience has next and has previous methods
     fun hasNextMediaItem(): Boolean
@@ -51,9 +51,9 @@ interface AppPlayer {
     fun hasPreviousMediaItem(): Boolean
 
     /// setters
-    fun setMediaItem(appTrack: AppTrack)
+    fun setMediaItem(appTrack: EagerAppTrack)
 
-    fun addMediaItem(appTrack: AppTrack, index: Int? = null)
+    fun addMediaItem(appTrack: EagerAppTrack, index: Int? = null)
 
     fun removeMediaItem(from: Int, to: Int)
 

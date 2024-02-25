@@ -1,8 +1,11 @@
 package tel.jeelpa.musicplayer
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import tel.jeelpa.musicplayer.models.AppTrack
+import kotlinx.coroutines.launch
+import tel.jeelpa.musicplayer.models.LazyAppTrack
+import tel.jeelpa.musicplayer.models.loadEager
 import tel.jeelpa.musicplayer.player.AppPlayer
 import tel.jeelpa.musicplayer.player.FlowPlayerListener
 import javax.inject.Inject
@@ -15,14 +18,18 @@ class PlayerViewModel @Inject constructor(
     fun playAtPosition(idx: Int) =
         player.seekToMediaItem(idx)
 
-    fun addToQueue(appTrack: AppTrack): Boolean {
-        player.addMediaItem(appTrack)
-        player.play()
+    fun addToQueue(appTrack: LazyAppTrack): Boolean {
+        viewModelScope.launch {
+            player.addMediaItem(appTrack.loadEager())
+            player.play()
+        }
         return true
     }
 
-    fun playTrack(appTrack: AppTrack) {
-        player.setMediaItem(appTrack)
-        player.play() // player doesnt not play automatically if it was paused
+    fun playTrack(appTrack: LazyAppTrack) {
+        viewModelScope.launch {
+            player.setMediaItem(appTrack.loadEager())
+            player.play() // player doesnt not play automatically if it was paused
+        }
     }
 }

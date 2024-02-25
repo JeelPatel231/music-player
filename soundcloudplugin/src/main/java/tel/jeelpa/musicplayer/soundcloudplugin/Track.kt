@@ -11,9 +11,12 @@ import tel.jeelpa.musicplayer.common.models.Track
 fun SoundcloudService.getTrack(
     id: String,
     name: String? = null,
-    cover: String? = null
+    cover: String? = null,
+    artistUrl: String? = null,
+    artist: String? = null,
+    artistAvatar: String? = null,
 ): Track {
-    return SCTrack(this, id, name, cover)
+    return SCTrack(this, id, name, cover, artistUrl, artist, artistAvatar)
 }
 
 class SCTrack(
@@ -21,6 +24,10 @@ class SCTrack(
     private val id: String,
     private val name: String?,
     private val cover: String?,
+
+    private val artistUrl: String?,
+    private val artist: String?,
+    private val artistAvatar: String?,
 ) : Track {
     private val streamExtractor by lazy { service.getStreamExtractor(id) }
 
@@ -41,7 +48,7 @@ class SCTrack(
         streamExtractor.fetchPage()
         return streamExtractor.relatedItems?.items.orEmpty()
             .filter { it.infoType == InfoItem.InfoType.STREAM }
-            .map { service.getTrack(it.url, it.name, it.thumbnailUrl) }
+            .map { service.getTrack(it.url, it.name, it.thumbnailUrl) } // TODO: no artist
     }
 
     override suspend fun getCover(): String {
@@ -51,13 +58,16 @@ class SCTrack(
     }
 
     override suspend fun getArtists(): List<Artist> {
+        if(artistUrl != null) {
+            return listOf(service.getArtist(artistUrl, artist, artistAvatar))
+        }
         streamExtractor.fetchPage()
         return listOf(streamExtractor.uploaderUrl)
             .map { service.getArtist(it, streamExtractor.uploaderName, streamExtractor.uploaderAvatarUrl) }
     }
 
     override suspend fun getAlbum(): Album {
-        streamExtractor.fetchPage()
+//        streamExtractor.fetchPage()
         TODO("Not yet implemented")
     }
 }

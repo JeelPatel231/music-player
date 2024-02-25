@@ -1,7 +1,10 @@
 package tel.jeelpa.musicplayer.soundcloudplugin
 
 import org.schabi.newpipe.extractor.InfoItem
+import org.schabi.newpipe.extractor.ServiceList.SoundCloud
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService
+import org.schabi.newpipe.extractor.services.soundcloud.extractors.SoundcloudChartsExtractor
+import org.schabi.newpipe.extractor.services.soundcloud.linkHandler.SoundcloudChartsLinkHandlerFactory
 import tel.jeelpa.musicplayer.common.clients.HomeFeedClient
 import tel.jeelpa.musicplayer.common.models.Album
 import tel.jeelpa.musicplayer.common.models.Artist
@@ -14,7 +17,8 @@ fun SoundcloudService.getHomeFeedClient(): SCHomeFeedClient {
 class SCHomeFeedClient(
     private val service: SoundcloudService,
 ): HomeFeedClient {
-    private val feedExtractor by lazy { service.getPlaylistExtractor("https://soundcloud.com/trending-music-in/sets/folk") } // .kioskList.getExtractorByUrl("https://soundcloud.com/trending-music-in/sets/folk", null) }
+    private val linkHandler = SoundcloudChartsLinkHandlerFactory().fromId("top")// TODO: probably wrong
+    private val feedExtractor by lazy { SoundcloudChartsExtractor(SoundCloud, linkHandler, "top") }
 //    private val feedExtractor by lazy { service.kioskList.getExtractorByUrl("https://soundcloud.com/charts/top", null) }
 
     override suspend fun getSongs(offset: Int, limit: Int): List<Track> {
@@ -22,7 +26,7 @@ class SCHomeFeedClient(
         return feedExtractor.initialPage.items.filter {
             it.infoType == InfoItem.InfoType.STREAM
         }.map {
-            service.getTrack(it.url, it.name, it.thumbnailUrl)
+            service.getTrack(it.url, it.name, it.thumbnailUrl, it.uploaderUrl, it.uploaderName, it.uploaderAvatarUrl)
         }
     }
 

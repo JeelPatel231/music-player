@@ -40,7 +40,7 @@ class SCArtist(
         artistExtractor.fetchPage()
         return artistExtractor.initialPage.items
             .filter { it.infoType == InfoItem.InfoType.STREAM }
-            .map { service.getTrack(it.url, it.name, it.thumbnailUrl) }
+            .map { service.getTrack(it.url, it.name, it.thumbnailUrl, it.uploaderUrl, it.uploaderName, it.uploaderAvatarUrl) }
     }
 
     override suspend fun getAlbums(offset: Int, limit: Int): List<Album> {

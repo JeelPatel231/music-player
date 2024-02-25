@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
-import tel.jeelpa.musicplayer.models.AppTrack
+import tel.jeelpa.musicplayer.models.EagerAppTrack
 import tel.jeelpa.musicplayer.player.FlowPlayerListener
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.player.models.RepeatMode
@@ -21,10 +21,10 @@ class ExoplayerListenerAdapter(
 
     private val _isPlaying = MutableStateFlow(player.isPlaying)
     private val _playbackState = MutableStateFlow(mapExoPlaybackStateToApp(player.playbackState))
-    private val _currentMediaItem = MutableStateFlow<AppTrack?>(null)
+    private val _currentMediaItem = MutableStateFlow<EagerAppTrack?>(null)
     private val _repeatMode = MutableStateFlow(mapRepeatModeToApp(player.repeatMode))
     private val _shuffle = MutableStateFlow(player.shuffleModeEnabled)
-    private val _timeline = MutableStateFlow(emptyList<AppTrack>())
+    private val _timeline = MutableStateFlow(emptyList<EagerAppTrack>())
 
     override fun listenToProgress(delay: Long): Flow<Float> = flow {
         while (true) {

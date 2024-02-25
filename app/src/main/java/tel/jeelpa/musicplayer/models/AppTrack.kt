@@ -1,6 +1,9 @@
 package tel.jeelpa.musicplayer.models
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import tel.jeelpa.musicplayer.common.models.Track
 import tel.jeelpa.musicplayer.player.models.AppMediaSource
@@ -9,11 +12,18 @@ import tel.jeelpa.musicplayer.player.models.toAppMediaSource
 /**
  * Used in UI to display data
  * */
-interface AppTrack {
+interface BaseAppTrack {
     val id: String
     val name: String
     val thumbnail: String?
     val artist: String
+}
+
+interface LazyAppTrack: BaseAppTrack {
+    suspend fun mediaSource(): AppMediaSource
+}
+
+interface EagerAppTrack: BaseAppTrack {
     val mediaSource: AppMediaSource
 }
 
@@ -23,7 +33,7 @@ interface AppTrack {
  * and the lazy loading data is just a function
  * which gets called when needed.
  * */
-suspend fun Track.toAppTrack(): AppTrack  {
+suspend fun Track.toLazyAppTrack(coroutineScope: CoroutineScope): LazyAppTrack  {
     val name = withContext(Dispatchers.IO) {
         getName()
     }
@@ -35,16 +45,29 @@ suspend fun Track.toAppTrack(): AppTrack  {
         getArtists().first().getName()
     }
 
-    val song = withContext(Dispatchers.IO) {
+    val song = coroutineScope.async(Dispatchers.IO, CoroutineStart.LAZY) {
         getMediaSource().first().toAppMediaSource()
     }
 
-    return object : AppTrack {
+    return object : LazyAppTrack {
         override val id = getUrl()
         override val name: String = name
         override val thumbnail: String = thumbnail
         override val artist = artist
-        override val mediaSource = song
+
+        override suspend fun mediaSource(): AppMediaSource =
+            song.await()
     }
 }
 
+suspend fun LazyAppTrack.loadEager(): EagerAppTrack {
+    val loadedMediaSource = this@loadEager.mediaSource()
+
+    return object : EagerAppTrack {
+        override val mediaSource: AppMediaSource = loadedMediaSource
+        override val id: String = this@loadEager.id
+        override val name: String = this@loadEager.name
+        override val thumbnail: String? = this@loadEager.thumbnail
+        override val artist: String = this@loadEager.artist
+    }
+}

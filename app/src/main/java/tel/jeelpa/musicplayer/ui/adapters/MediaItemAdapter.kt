@@ -5,23 +5,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import coil.load
 import tel.jeelpa.musicplayer.databinding.ItemMediaSmallBinding
-import tel.jeelpa.musicplayer.models.AppTrack
+import tel.jeelpa.musicplayer.models.LazyAppTrack
 
-object AppTrackComparator: DiffUtil.ItemCallback<AppTrack>() {
-    override fun areItemsTheSame(oldItem: AppTrack, newItem: AppTrack): Boolean {
+object AppTrackComparator: DiffUtil.ItemCallback<LazyAppTrack>() {
+    override fun areItemsTheSame(oldItem: LazyAppTrack, newItem: LazyAppTrack): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: AppTrack, newItem: AppTrack): Boolean {
+    override fun areContentsTheSame(oldItem: LazyAppTrack, newItem: LazyAppTrack): Boolean {
         return oldItem.id == newItem.id
     }
 
 }
 
 class MediaItemAdapter(
-    private val onItemClick: (AppTrack) -> Unit = {},
-    private val onItemLongClick: (AppTrack) -> Boolean = { false },
-): GenericListAdapter<AppTrack, ItemMediaSmallBinding>(AppTrackComparator){
+    private val onItemClick: (LazyAppTrack) -> Unit = {},
+    private val onItemLongClick: (LazyAppTrack) -> Boolean = { false },
+): GenericListAdapter<LazyAppTrack, ItemMediaSmallBinding>(AppTrackComparator){
     override fun inflateCallback(
         layoutInflator: LayoutInflater,
         viewGroup: ViewGroup?,
@@ -30,7 +30,7 @@ class MediaItemAdapter(
         return ItemMediaSmallBinding.inflate(layoutInflator, viewGroup, attachToParent)
     }
 
-    override fun onBind(binding: ItemMediaSmallBinding, entry: AppTrack, position: Int) {
+    override fun onBind(binding: ItemMediaSmallBinding, entry: LazyAppTrack, position: Int) {
         binding.root.setOnClickListener { onItemClick(entry) }
         binding.root.setOnLongClickListener {
             onItemLongClick(entry)
