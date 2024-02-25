@@ -1,9 +1,7 @@
 package tel.jeelpa.musicplayer.common.clients
 
+import tel.jeelpa.musicplayer.common.models.Album
+
 interface AlbumClient {
-    fun getUrl(): String
-    suspend fun getName(): String
-    suspend fun getAlbumArtists(): List<ArtistClient>
-    suspend fun getAlbumArt(): String
-    suspend fun getSongs(offset: Int, limit: Int): List<TrackClient>
+    fun search(query: String, page: Int, perPage: Int): List<Album>
 }

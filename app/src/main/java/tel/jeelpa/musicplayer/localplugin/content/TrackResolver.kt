@@ -3,7 +3,8 @@ package tel.jeelpa.musicplayer.localplugin.content
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
-import tel.jeelpa.musicplayer.localplugin.LocalPluginTrackClient
+import androidx.core.database.getStringOrNull
+import tel.jeelpa.musicplayer.localplugin.LocalPluginTrack
 
 class TrackResolver(
     private val contentResolver: LocalPluginContentResolver
@@ -11,6 +12,7 @@ class TrackResolver(
     companion object {
         private val trackProjection = arrayOf(
             MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.DISPLAY_NAME,
             MediaStore.Audio.Media.ALBUM_ID,
             MediaStore.Audio.Media.ARTIST_ID,
@@ -35,11 +37,16 @@ class TrackResolver(
 
     fun getAll() = queryTracks()
 
+    fun search(query: String) = queryTracks(
+        selection = "${MediaStore.Audio.Media.TITLE} LIKE ? OR ${MediaStore.Audio.Media.DISPLAY_NAME} LIKE ?",
+        selectionArgs = arrayOf("%$query%", "%$query%")
+    )
+
     private fun queryTracks(
         selection: String? = null,
         selectionArgs: Array<String> = emptyArray(),
         sortOrder: String? = null
-    ): List<LocalPluginTrackClient> {
+    ): List<LocalPluginTrack> {
         contentResolver.contentResolver.query(
             AUDIO_COLLECTION,
             trackProjection,
@@ -50,10 +57,9 @@ class TrackResolver(
             return cursor.collect {
                 // columns
                 val idColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
-                val nameColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
+                val nameColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
+                val displayNameColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
                 val albumIdColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
-                val artistIdColumn =
-                    it.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID)
 
                 // values retrieved from columns
                 val id = it.getLong(idColumn)
@@ -67,10 +73,10 @@ class TrackResolver(
                 )
 
 
-                LocalPluginTrackClient(
+                LocalPluginTrack(
                     id = id,
                     url = trackUri,
-                    name = it.getString(nameColumn),
+                    name = it.getStringOrNull(nameColumn) ?: it.getString(displayNameColumn),
                     albumId = it.getString(albumIdColumn),
                     cover = albumArt,
                     customContentResolver = contentResolver

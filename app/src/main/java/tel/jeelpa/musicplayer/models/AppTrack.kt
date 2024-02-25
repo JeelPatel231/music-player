@@ -2,7 +2,7 @@ package tel.jeelpa.musicplayer.models
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import tel.jeelpa.musicplayer.common.clients.TrackClient
+import tel.jeelpa.musicplayer.common.models.Track
 import tel.jeelpa.musicplayer.player.models.AppMediaSource
 import tel.jeelpa.musicplayer.player.models.toAppMediaSource
 
@@ -12,7 +12,7 @@ import tel.jeelpa.musicplayer.player.models.toAppMediaSource
 interface AppTrack {
     val id: String
     val name: String
-    val thumbnail: String
+    val thumbnail: String?
     val artist: String
     val mediaSource: AppMediaSource
 }
@@ -23,7 +23,7 @@ interface AppTrack {
  * and the lazy loading data is just a function
  * which gets called when needed.
  * */
-suspend fun TrackClient.toTrack(): AppTrack  {
+suspend fun Track.toAppTrack(): AppTrack  {
     val name = withContext(Dispatchers.IO) {
         getName()
     }

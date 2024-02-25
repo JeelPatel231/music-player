@@ -2,21 +2,20 @@ package tel.jeelpa.musicplayer.player
 
 import kotlinx.coroutines.flow.Flow
 import tel.jeelpa.musicplayer.models.AppTrack
-import tel.jeelpa.musicplayer.player.models.AppMediaSource
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.player.models.RepeatMode
 
-interface PlayerListener {
-    fun onIsPlayingChanged(isPlaying: Boolean) {}
-
-    fun onPlaybackStateChanged(playbackState: PlaybackState) {}
-
-    fun mediaItemChanged(mediaItem: AppMediaSource) {}
-
-    fun onRepeatModeChanged(repeatMode: RepeatMode) {}
-
-    fun onShuffleModeChanged(enabled: Boolean) {}
-}
+//interface PlayerListener {
+//    fun onIsPlayingChanged(isPlaying: Boolean) {}
+//
+//    fun onPlaybackStateChanged(playbackState: PlaybackState) {}
+//
+//    fun mediaItemChanged(mediaItem: AppMediaSource) {}
+//
+//    fun onRepeatModeChanged(repeatMode: RepeatMode) {}
+//
+//    fun onShuffleModeChanged(enabled: Boolean) {}
+//}
 
 
 interface FlowPlayerListener {

@@ -1,4 +1,4 @@
-package tel.jeelpa.musicplayer.adapters
+package tel.jeelpa.musicplayer.ui.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

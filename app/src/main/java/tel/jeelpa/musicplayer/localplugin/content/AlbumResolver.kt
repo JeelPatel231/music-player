@@ -3,8 +3,8 @@ package tel.jeelpa.musicplayer.localplugin.content
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
-import tel.jeelpa.musicplayer.common.clients.AlbumClient
-import tel.jeelpa.musicplayer.localplugin.LocalPluginAlbumClient
+import tel.jeelpa.musicplayer.common.models.Album
+import tel.jeelpa.musicplayer.localplugin.LocalPluginAlbum
 
 class AlbumResolver(
     private val customContentResolver: LocalPluginContentResolver
@@ -28,11 +28,16 @@ class AlbumResolver(
 
     fun getAll() = queryAlbums()
 
+    fun search(query: String) = queryAlbums(
+        selection = "${MediaStore.Audio.Media.ALBUM} LIKE ?",
+        selectionArgs = arrayOf("%$query%"),
+    )
+
     private fun queryAlbums(
         selection: String? = null,
         selectionArgs: Array<String> = emptyArray(),
-        sortOrder: String? = null
-    ): List<AlbumClient> {
+        sortOrder: String? = null,
+    ): List<Album> {
         customContentResolver.contentResolver.query(
             AUDIO_COLLECTION,
             albumProjection,
@@ -50,13 +55,13 @@ class AlbumResolver(
                     id
                 )
 
-                LocalPluginAlbumClient(
+                LocalPluginAlbum(
                     id = id,
                     name = it.getString(albumColumn),
                     art = coverUri,
                     resolver = customContentResolver,
                 )
-            }.distinctBy { it.getUrl() }
+            }.distinctBy { it.getUrl() } // TODO: get unique values at DB level
         }
     }
 }

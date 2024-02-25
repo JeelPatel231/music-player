@@ -1,4 +1,4 @@
-package tel.jeelpa.musicplayer.adapters
+package tel.jeelpa.musicplayer.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +21,7 @@ object TrackDifferentiatorWithCurrent : DiffUtil.ItemCallback<TrackWithCurrent>(
 }
 
 typealias TrackWithCurrent = Pair<
-        AppTrack,      /*Track Info*/
+        AppTrack,   /* Track Info */
         Boolean,    /* Is Currently Playing? */
         >
 

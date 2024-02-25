@@ -63,7 +63,7 @@ dependencies {
     implementation(project(":plugger:plugger"))
 
     // TODO: REMOVE IN RELEASE
-    implementation(project(":ytmplugin"))
+//    implementation(project(":ytmplugin"))
     implementation(project(":soundcloudplugin"))
     debugImplementation("com.squareup.leakcanary:leakcanary-android:3.0-alpha-1")
 

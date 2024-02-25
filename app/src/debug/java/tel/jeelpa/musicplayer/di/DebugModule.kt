@@ -10,9 +10,7 @@ import tel.jeelpa.musicplayer.localplugin.LocalPluginClientsHolder
 import tel.jeelpa.musicplayer.localplugin.content.LocalPluginContentResolver
 import tel.jeelpa.musicplayer.musicservices.DebugCurrentServiceHolder
 import tel.jeelpa.musicplayer.musicservices.GetCurrentClient
-import tel.jeelpa.musicplayer.soundcloudplugin.SCPluginClientsHolder
 import tel.jeelpa.musicplayer.stores.TrackerStore
-import tel.jeelpa.musicplayer.ytmplugin.YTMPluginClientsHolder
 import tel.jeelpa.plugger.PluginRepo
 import tel.jeelpa.plugger.RepoComposer
 import javax.inject.Singleton
@@ -57,8 +55,8 @@ class DebugModule {
 //        return CurrentServiceHolder(store, loader)
         val localPluginContentResolver = LocalPluginContentResolver(application.contentResolver)
         return DebugCurrentServiceHolder(LocalPluginClientsHolder(localPluginContentResolver))
-        return DebugCurrentServiceHolder(SCPluginClientsHolder())
-        return DebugCurrentServiceHolder(YTMPluginClientsHolder())
+//        return DebugCurrentServiceHolder(SCPluginClientsHolder())
+//        return DebugCurrentServiceHolder(YTMPluginClientsHolder())
     }
 
 }

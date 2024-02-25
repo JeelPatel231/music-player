@@ -10,7 +10,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import tel.jeelpa.musicplayer.localplugin.LocalPluginClientsHolder
 import tel.jeelpa.musicplayer.localplugin.content.LocalPluginContentResolver
-import tel.jeelpa.plugger.utils.dbg
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -43,24 +42,21 @@ class ExampleInstrumentedTest {
 //            .onEach { it.dbg() }
 
 
-
-
-
-        localPlugin.getHomeFeedClient()
-            .getSongs(0,0)
-            .dbg("Songs")
-            .ifEmpty { error("List was empty, did you forget to grant permissions or you actually don't have any songs on device") }
-            .map { it.getAlbum() }
-            .dbg("Albums")
-            .map { it.getAlbumArtists() }
-            .flatten().onEach { it.getName().dbg("ARITST NAMES") }
-            .map { it.getSongs(0,0) }
-            .flatten()
-            .onEach { it.getName().dbg("Song by artist NAMES") }
-            .map { it.getArtists().dbg("Artists") }
-            .flatten().onEach { it.getName().dbg("Artist of song NAMES") }
-            .map { it.getAlbums(0,0) }
-            .flatten().onEach { it.getName().dbg("Albums By Artist NAMES") }
+//        localPlugin.getHomeFeedClient()
+//            .getSongs(0,0)
+//            .dbg("Songs")
+//            .ifEmpty { error("List was empty, did you forget to grant permissions or you actually don't have any songs on device") }
+//            .map { it.getAlbum() }
+//            .dbg("Albums")
+//            .map { it.getAlbumArtists() }
+//            .flatten().onEach { it.getName().dbg("ARITST NAMES") }
+//            .map { it.getSongs(0,0) }
+//            .flatten()
+//            .onEach { it.getName().dbg("Song by artist NAMES") }
+//            .map { it.getArtists().dbg("Artists") }
+//            .flatten().onEach { it.getName().dbg("Artist of song NAMES") }
+//            .map { it.getAlbums(0,0) }
+//            .flatten().onEach { it.getName().dbg("Albums By Artist NAMES") }
 
     }
 }

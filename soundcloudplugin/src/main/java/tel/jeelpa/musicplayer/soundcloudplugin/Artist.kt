@@ -2,24 +2,24 @@ package tel.jeelpa.musicplayer.soundcloudplugin
 
 import org.schabi.newpipe.extractor.InfoItem
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService
-import tel.jeelpa.musicplayer.common.clients.AlbumClient
-import tel.jeelpa.musicplayer.common.clients.ArtistClient
-import tel.jeelpa.musicplayer.common.clients.TrackClient
+import tel.jeelpa.musicplayer.common.models.Album
+import tel.jeelpa.musicplayer.common.models.Artist
+import tel.jeelpa.musicplayer.common.models.Track
 
-fun SoundcloudService.getArtistClient(
+fun SoundcloudService.getArtist(
     id: String,
     name: String? = null,
     avatar: String? = null,
-): ArtistClient {
-    return SCArtistClient(this, id, name, avatar)
+): Artist {
+    return SCArtist(this, id, name, avatar)
 }
 
-class SCArtistClient(
+class SCArtist(
     private val service: SoundcloudService,
     private val id: String,
     private val name: String?,
     private val avatar: String?,
-): ArtistClient {
+): Artist {
     private val artistExtractor by lazy { service.getChannelExtractor(id) }
 
     override fun getUrl(): String = id
@@ -36,21 +36,21 @@ class SCArtistClient(
         return artistExtractor.avatarUrl
     }
 
-    override suspend fun getSongs(offset: Int, limit: Int): List<TrackClient> {
+    override suspend fun getSongs(offset: Int, limit: Int): List<Track> {
         artistExtractor.fetchPage()
         return artistExtractor.initialPage.items
             .filter { it.infoType == InfoItem.InfoType.STREAM }
-            .map { service.getTrackClient(it.url, it.name, it.thumbnailUrl) }
+            .map { service.getTrack(it.url, it.name, it.thumbnailUrl) }
     }
 
-    override suspend fun getAlbums(offset: Int, limit: Int): List<AlbumClient> {
+    override suspend fun getAlbums(offset: Int, limit: Int): List<Album> {
         artistExtractor.fetchPage()
         return artistExtractor.initialPage.items
             .filter { it.infoType == InfoItem.InfoType.PLAYLIST }
-            .map { service.getAlbumClient(it.url, it.name, it.thumbnailUrl) }
+            .map { service.getAlbum(it.url, it.name, it.thumbnailUrl) }
     }
 
-    override suspend fun getSingles(offset: Int, limit: Int): List<AlbumClient> {
+    override suspend fun getSingles(offset: Int, limit: Int): List<Album> {
         return emptyList()
 //        artistExtractor.fetchPage()
 //        return artistExtractor.initialPage.items

@@ -19,13 +19,25 @@ class SCPluginClientsHolder : ClientsHolder {
     override fun getHomeFeedClient(): HomeFeedClient =
         SoundCloud.getHomeFeedClient()
 
-    override fun getAlbumClient(id: String): AlbumClient =
-        SoundCloud.getAlbumClient(id)
+    override fun getAlbumClient(): AlbumClient {
+        TODO("Not yet implemented")
+    }
 
-    override fun getArtistClient(id: String): ArtistClient =
-        SoundCloud.getArtistClient(id)
+    override fun getArtistClient(): ArtistClient {
+        TODO("Not yet implemented")
+    }
 
-    override fun getTrackClient(id: String): TrackClient =
-        SoundCloud.getTrackClient(id)
+    override fun getTrackClient(): TrackClient {
+        TODO("Not yet implemented")
+    }
+
+//    override fun getAlbumClient(id: String): Album =
+//        SoundCloud.getAlbumClient(id)
+//
+//    override fun getArtistClient(id: String): Artist =
+//        SoundCloud.getArtistClient(id)
+//
+//    override fun getTrackClient(id: String): Track =
+//        SoundCloud.getTrackClient(id)
 
 }

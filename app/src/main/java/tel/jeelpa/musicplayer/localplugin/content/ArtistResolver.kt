@@ -1,8 +1,8 @@
 package tel.jeelpa.musicplayer.localplugin.content
 
 import android.provider.MediaStore
-import tel.jeelpa.musicplayer.common.clients.ArtistClient
-import tel.jeelpa.musicplayer.localplugin.LocalPluginArtistClient
+import tel.jeelpa.musicplayer.common.models.Artist
+import tel.jeelpa.musicplayer.localplugin.LocalPluginArtist
 
 class ArtistResolver(
     private val customContentResolver: LocalPluginContentResolver
@@ -31,11 +31,16 @@ class ArtistResolver(
 
     fun getAll() = queryArtists()
 
+    fun search(query: String) = queryArtists(
+        selection = "${MediaStore.Audio.Media.ARTIST} LIKE ?",
+        selectionArgs = arrayOf("%$query%")
+    )
+
     private fun queryArtists(
         selection: String? = null,
         selectionArgs: Array<String> = emptyArray(),
         sortOrder: String? = null
-    ): List<ArtistClient> {
+    ): List<Artist> {
         customContentResolver.contentResolver.query(
             AUDIO_COLLECTION,
             artistProjection,
@@ -48,7 +53,7 @@ class ArtistResolver(
                 val idColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID)
                 val artistColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
 
-                LocalPluginArtistClient(
+                LocalPluginArtist(
                     resolver = customContentResolver,
                     id = it.getLong(idColumn),
                     name = it.getString(artistColumn),

@@ -2,24 +2,24 @@ package tel.jeelpa.musicplayer.soundcloudplugin
 
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
-import tel.jeelpa.musicplayer.common.clients.AlbumClient
-import tel.jeelpa.musicplayer.common.clients.ArtistClient
-import tel.jeelpa.musicplayer.common.clients.TrackClient
+import tel.jeelpa.musicplayer.common.models.Album
+import tel.jeelpa.musicplayer.common.models.Artist
+import tel.jeelpa.musicplayer.common.models.Track
 
-fun SoundcloudService.getAlbumClient(
+fun SoundcloudService.getAlbum(
     id: String,
     name: String? = null,
     cover: String? = null,
-): SCAlbumClient {
-    return SCAlbumClient(this, id, name, cover)
+): SCAlbum {
+    return SCAlbum(this, id, name, cover)
 }
 
-class SCAlbumClient(
+class SCAlbum(
     private val service: SoundcloudService,
     private val id: String,
     private val name: String?,
     private val cover: String?,
-): AlbumClient {
+): Album {
     private val albumExtractor by lazy { service.getPlaylistExtractor(id) }
 
     override fun getUrl(): String = id
@@ -30,10 +30,10 @@ class SCAlbumClient(
         return albumExtractor.name
     }
 
-    override suspend fun getAlbumArtists(): List<ArtistClient> {
+    override suspend fun getAlbumArtists(): List<Artist> {
         albumExtractor.fetchPage()
         return listOf(albumExtractor.uploaderUrl)
-            .map { service.getArtistClient(it, albumExtractor.uploaderName, albumExtractor.uploaderAvatarUrl) }
+            .map { service.getArtist(it, albumExtractor.uploaderName, albumExtractor.uploaderAvatarUrl) }
     }
 
     override suspend fun getAlbumArt(): String {
@@ -56,8 +56,8 @@ class SCAlbumClient(
     }
 
 
-    override suspend fun getSongs(offset: Int, limit: Int): List<TrackClient> {
+    override suspend fun getSongs(offset: Int, limit: Int): List<Track> {
         return fetchAllPages()
-            .map { service.getTrackClient(it.url, it.name, it.thumbnailUrl) }
+            .map { service.getTrack(it.url, it.name, it.thumbnailUrl) }
     }
 }

@@ -7,9 +7,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import tel.jeelpa.musicplayer.exoplayer.ExoplayerListenerAdapter
 import tel.jeelpa.musicplayer.player.AppPlayer
 import tel.jeelpa.musicplayer.player.FlowPlayerListener
+import tel.jeelpa.musicplayer.player.exoplayerimpl.ExoplayerListenerAdapter
 import tel.jeelpa.musicplayer.stores.TrackerStore
 import javax.inject.Singleton
 

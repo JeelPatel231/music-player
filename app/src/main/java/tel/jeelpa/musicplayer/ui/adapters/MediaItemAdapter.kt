@@ -1,15 +1,27 @@
-package tel.jeelpa.musicplayer.adapters
+package tel.jeelpa.musicplayer.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import coil.load
 import tel.jeelpa.musicplayer.databinding.ItemMediaSmallBinding
 import tel.jeelpa.musicplayer.models.AppTrack
 
+object AppTrackComparator: DiffUtil.ItemCallback<AppTrack>() {
+    override fun areItemsTheSame(oldItem: AppTrack, newItem: AppTrack): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: AppTrack, newItem: AppTrack): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+}
+
 class MediaItemAdapter(
     private val onItemClick: (AppTrack) -> Unit = {},
     private val onItemLongClick: (AppTrack) -> Boolean = { false },
-): GenericListAdapter<AppTrack, ItemMediaSmallBinding>(){
+): GenericListAdapter<AppTrack, ItemMediaSmallBinding>(AppTrackComparator){
     override fun inflateCallback(
         layoutInflator: LayoutInflater,
         viewGroup: ViewGroup?,

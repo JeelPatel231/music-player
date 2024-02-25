@@ -1,7 +1,7 @@
 package tel.jeelpa.musicplayer.player.models
 
-import tel.jeelpa.musicplayer.common.clients.AbstractMediaSource
-import tel.jeelpa.musicplayer.common.clients.StringMediaSource
+import tel.jeelpa.musicplayer.common.models.AbstractMediaSource
+import tel.jeelpa.musicplayer.common.models.StringMediaSource
 
 
 sealed interface AppMediaSource {

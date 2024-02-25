@@ -1,4 +1,4 @@
-package tel.jeelpa.musicplayer.exoplayer
+package tel.jeelpa.musicplayer.player.exoplayerimpl
 
 import androidx.media3.common.C
 import androidx.media3.common.Player

@@ -1,24 +1,24 @@
 package tel.jeelpa.musicplayer.ytmplugin
 
 import org.schabi.newpipe.extractor.services.youtube.YoutubeService
-import tel.jeelpa.musicplayer.common.clients.AlbumClient
-import tel.jeelpa.musicplayer.common.clients.ArtistClient
-import tel.jeelpa.musicplayer.common.clients.TrackClient
+import tel.jeelpa.musicplayer.common.models.Album
+import tel.jeelpa.musicplayer.common.models.Artist
+import tel.jeelpa.musicplayer.common.models.Track
 
 fun YoutubeService.getAlbumClient(
     id: String,
     name: String? = null,
     cover: String? = null,
-): YTMAlbumClient {
-    return YTMAlbumClient(this, id, name, cover)
+): YTMAlbum {
+    return YTMAlbum(this, id, name, cover)
 }
 
-class YTMAlbumClient(
+class YTMAlbum(
     private val service: YoutubeService,
     private val id: String,
     private val name: String?,
     private val cover: String?,
-): AlbumClient {
+): Album {
     private val albumExtractor by lazy { service.getPlaylistExtractor(id) }
 
     override fun getUrl(): String = id
@@ -29,7 +29,7 @@ class YTMAlbumClient(
         return albumExtractor.name
     }
 
-    override suspend fun getAlbumArtists(): List<ArtistClient> {
+    override suspend fun getAlbumArtists(): List<Artist> {
         albumExtractor.fetchPage()
         return listOf(albumExtractor.uploaderUrl)
             .map { service.getArtistClient(it, albumExtractor.name, albumExtractor.thumbnailUrl) }
@@ -41,7 +41,7 @@ class YTMAlbumClient(
         return albumExtractor.thumbnailUrl
     }
 
-    override suspend fun getSongs(offset: Int, limit: Int): List<TrackClient> {
+    override suspend fun getSongs(offset: Int, limit: Int): List<Track> {
         albumExtractor.fetchPage()
         val page = if (offset == 0) {
             albumExtractor.initialPage

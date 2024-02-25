@@ -1,21 +1,21 @@
 package tel.jeelpa.musicplayer.localplugin
 
 import android.net.Uri
-import tel.jeelpa.musicplayer.common.clients.AbstractMediaSource
-import tel.jeelpa.musicplayer.common.clients.AlbumClient
-import tel.jeelpa.musicplayer.common.clients.ArtistClient
-import tel.jeelpa.musicplayer.common.clients.StringMediaSource
-import tel.jeelpa.musicplayer.common.clients.TrackClient
+import tel.jeelpa.musicplayer.common.models.AbstractMediaSource
+import tel.jeelpa.musicplayer.common.models.Album
+import tel.jeelpa.musicplayer.common.models.Artist
+import tel.jeelpa.musicplayer.common.models.StringMediaSource
+import tel.jeelpa.musicplayer.common.models.Track
 import tel.jeelpa.musicplayer.localplugin.content.LocalPluginContentResolver
 
-class LocalPluginTrackClient(
+class LocalPluginTrack(
     private val customContentResolver: LocalPluginContentResolver,
     private val id: Long,
     private val url: Uri,
     private val name: String,
     private val cover: Uri,
     private val albumId: String
-): TrackClient {
+): Track {
     override suspend fun getName(): String = name
 
     override fun getUrl(): String = id.toString()
@@ -24,17 +24,17 @@ class LocalPluginTrackClient(
         return listOf(StringMediaSource(url.toString()))
     }
 
-    override suspend fun getRadio(): List<TrackClient> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getRadio(): List<Track> =
+        /* Radio is not supported in local songs */
+        emptyList()
 
     override suspend fun getCover(): String = cover.toString()
 
-    override suspend fun getArtists(): List<ArtistClient> {
+    override suspend fun getArtists(): List<Artist> {
         return customContentResolver.artistResolver.getByTrack(id.toString())
     }
 
-    override suspend fun getAlbum(): AlbumClient {
+    override suspend fun getAlbum(): Album {
         return customContentResolver.albumResolver.getById(albumId)
     }
 }

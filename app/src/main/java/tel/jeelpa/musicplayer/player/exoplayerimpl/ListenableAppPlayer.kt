@@ -1,4 +1,4 @@
-package tel.jeelpa.musicplayer.exoplayer
+package tel.jeelpa.musicplayer.player.exoplayerimpl
 
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -17,7 +17,7 @@ class ExoplayerListenerAdapter(
     private val player: ExoPlayer
 ) :
 /* AppPlayer Implementation */ ExoplayerImpl(player),
-    /* FlowListener Implementation */ FlowPlayerListener {
+/* FlowListener Implementation */ FlowPlayerListener {
 
     private val _isPlaying = MutableStateFlow(player.isPlaying)
     private val _playbackState = MutableStateFlow(mapExoPlaybackStateToApp(player.playbackState))

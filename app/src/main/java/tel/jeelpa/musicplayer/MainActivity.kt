@@ -18,7 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPS
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
-import tel.jeelpa.musicplayer.adapters.TimelineItemAdapter
+import tel.jeelpa.musicplayer.ui.adapters.TimelineItemAdapter
 import tel.jeelpa.musicplayer.databinding.ActivityMainBinding
 import tel.jeelpa.musicplayer.databinding.BottomSheetPlayerBinding
 import tel.jeelpa.musicplayer.databinding.BottomSheetQueueBinding
@@ -26,7 +26,7 @@ import tel.jeelpa.musicplayer.databinding.FullPlayerBinding
 import tel.jeelpa.musicplayer.databinding.MiniPlayerBinding
 import tel.jeelpa.musicplayer.player.models.Duration
 import tel.jeelpa.musicplayer.player.models.PlaybackState
-import tel.jeelpa.musicplayer.ui.SampleFragment
+import tel.jeelpa.musicplayer.ui.screens.SampleFragment
 import tel.jeelpa.musicplayer.utils.BottomSheetBackPress.getBackPressedHandler
 import tel.jeelpa.musicplayer.utils.observeFlow
 

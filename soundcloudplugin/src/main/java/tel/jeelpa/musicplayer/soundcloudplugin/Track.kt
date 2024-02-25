@@ -2,26 +2,26 @@ package tel.jeelpa.musicplayer.soundcloudplugin
 
 import org.schabi.newpipe.extractor.InfoItem
 import org.schabi.newpipe.extractor.services.soundcloud.SoundcloudService
-import tel.jeelpa.musicplayer.common.clients.AbstractMediaSource
-import tel.jeelpa.musicplayer.common.clients.AlbumClient
-import tel.jeelpa.musicplayer.common.clients.ArtistClient
-import tel.jeelpa.musicplayer.common.clients.StringMediaSource
-import tel.jeelpa.musicplayer.common.clients.TrackClient
+import tel.jeelpa.musicplayer.common.models.AbstractMediaSource
+import tel.jeelpa.musicplayer.common.models.Album
+import tel.jeelpa.musicplayer.common.models.Artist
+import tel.jeelpa.musicplayer.common.models.StringMediaSource
+import tel.jeelpa.musicplayer.common.models.Track
 
-fun SoundcloudService.getTrackClient(
+fun SoundcloudService.getTrack(
     id: String,
     name: String? = null,
     cover: String? = null
-): TrackClient {
-    return SCTrackClient(this, id, name, cover)
+): Track {
+    return SCTrack(this, id, name, cover)
 }
 
-class SCTrackClient(
+class SCTrack(
     private val service: SoundcloudService,
     private val id: String,
     private val name: String?,
     private val cover: String?,
-) : TrackClient {
+) : Track {
     private val streamExtractor by lazy { service.getStreamExtractor(id) }
 
     override suspend fun getName(): String {
@@ -37,11 +37,11 @@ class SCTrackClient(
         return streamExtractor.audioStreams.map { StringMediaSource(it.content) }
     }
 
-    override suspend fun getRadio(): List<TrackClient> {
+    override suspend fun getRadio(): List<Track> {
         streamExtractor.fetchPage()
         return streamExtractor.relatedItems?.items.orEmpty()
             .filter { it.infoType == InfoItem.InfoType.STREAM }
-            .map { service.getTrackClient(it.url, it.name, it.thumbnailUrl) }
+            .map { service.getTrack(it.url, it.name, it.thumbnailUrl) }
     }
 
     override suspend fun getCover(): String {
@@ -50,13 +50,13 @@ class SCTrackClient(
         return streamExtractor.thumbnailUrl
     }
 
-    override suspend fun getArtists(): List<ArtistClient> {
+    override suspend fun getArtists(): List<Artist> {
         streamExtractor.fetchPage()
         return listOf(streamExtractor.uploaderUrl)
-            .map { service.getArtistClient(it, streamExtractor.uploaderName, streamExtractor.uploaderAvatarUrl) }
+            .map { service.getArtist(it, streamExtractor.uploaderName, streamExtractor.uploaderAvatarUrl) }
     }
 
-    override suspend fun getAlbum(): AlbumClient {
+    override suspend fun getAlbum(): Album {
         streamExtractor.fetchPage()
         TODO("Not yet implemented")
     }

@@ -5,6 +5,9 @@ import tel.jeelpa.musicplayer.common.clients.AlbumClient
 import tel.jeelpa.musicplayer.common.clients.ArtistClient
 import tel.jeelpa.musicplayer.common.clients.HomeFeedClient
 import tel.jeelpa.musicplayer.common.clients.TrackClient
+import tel.jeelpa.musicplayer.localplugin.clients.LocalAlbumClient
+import tel.jeelpa.musicplayer.localplugin.clients.LocalArtistClient
+import tel.jeelpa.musicplayer.localplugin.clients.LocalTrackClient
 import tel.jeelpa.musicplayer.localplugin.content.LocalPluginContentResolver
 
 class LocalPluginClientsHolder(
@@ -17,12 +20,12 @@ class LocalPluginClientsHolder(
     override fun getHomeFeedClient(): HomeFeedClient =
         LocalPluginHomeFeedClient(resolver)
 
-    override fun getAlbumClient(id: String): AlbumClient =
-        resolver.albumResolver.getById(id)
+    override fun getAlbumClient(): AlbumClient =
+        LocalAlbumClient(resolver.albumResolver)
 
-    override fun getArtistClient(id: String): ArtistClient =
-        resolver.artistResolver.getById(id)
+    override fun getArtistClient(): ArtistClient =
+        LocalArtistClient(resolver.artistResolver)
 
-    override fun getTrackClient(id: String): TrackClient =
-        resolver.trackResolver.getById(id)
+    override fun getTrackClient(): TrackClient =
+        LocalTrackClient(resolver.trackResolver)
 }

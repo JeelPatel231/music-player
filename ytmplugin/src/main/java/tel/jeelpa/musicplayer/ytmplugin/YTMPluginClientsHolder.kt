@@ -3,10 +3,10 @@ package tel.jeelpa.musicplayer.ytmplugin
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList.YouTube
 import tel.jeelpa.musicplayer.common.ClientsHolder
-import tel.jeelpa.musicplayer.common.clients.AlbumClient
-import tel.jeelpa.musicplayer.common.clients.ArtistClient
+import tel.jeelpa.musicplayer.common.models.Album
+import tel.jeelpa.musicplayer.common.models.Artist
 import tel.jeelpa.musicplayer.common.clients.HomeFeedClient
-import tel.jeelpa.musicplayer.common.clients.TrackClient
+import tel.jeelpa.musicplayer.common.models.Track
 
 class YTMPluginClientsHolder : ClientsHolder {
     init {
@@ -19,13 +19,13 @@ class YTMPluginClientsHolder : ClientsHolder {
     override fun getHomeFeedClient(): HomeFeedClient =
         YouTube.getHomeFeedClient()
 
-    override fun getAlbumClient(id: String): AlbumClient =
+    override fun getAlbumClient(id: String): Album =
         YouTube.getAlbumClient(id)
 
-    override fun getArtistClient(id: String): ArtistClient =
+    override fun getArtistClient(id: String): Artist =
         YouTube.getArtistClient(id)
 
-    override fun getTrackClient(id: String): TrackClient =
+    override fun getTrackClient(id: String): Track =
         YouTube.getTrackClient(id)
 
 }

@@ -1,4 +1,4 @@
-package tel.jeelpa.musicplayer.common.clients
+package tel.jeelpa.musicplayer.common.models
 
 sealed class AbstractMediaSource;
 
