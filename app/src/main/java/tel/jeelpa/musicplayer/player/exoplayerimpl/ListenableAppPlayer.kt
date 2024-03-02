@@ -2,7 +2,6 @@ package tel.jeelpa.musicplayer.player.exoplayerimpl
 
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,10 +12,10 @@ import tel.jeelpa.musicplayer.player.FlowPlayerListener
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.player.models.RepeatMode
 
-class ExoplayerListenerAdapter(
-    private val player: ExoPlayer
+class Media3PlayerListenerAdapter(
+    private val player: Player
 ) :
-/* AppPlayer Implementation */ ExoplayerImpl(player),
+/* AppPlayer Implementation */ Media3PlayerImpl(player),
 /* FlowListener Implementation */ FlowPlayerListener {
 
     private val _isPlaying = MutableStateFlow(player.isPlaying)
@@ -43,22 +42,22 @@ class ExoplayerListenerAdapter(
 
 
     private fun mapExoPlaybackStateToApp(playbackState: Int) = when (playbackState) {
-        ExoPlayer.STATE_IDLE -> PlaybackState.Idle
-        ExoPlayer.STATE_ENDED -> PlaybackState.Stopped
-        ExoPlayer.STATE_BUFFERING -> PlaybackState.Buffering
-        ExoPlayer.STATE_READY -> PlaybackState.Ready
-        else -> error("Unknown ExoPlayer State, Failed to map to app playback state")
+        Player.STATE_IDLE -> PlaybackState.Idle
+        Player.STATE_ENDED -> PlaybackState.Stopped
+        Player.STATE_BUFFERING -> PlaybackState.Buffering
+        Player.STATE_READY -> PlaybackState.Ready
+        else -> error("Unknown Player State, Failed to map to app playback state")
     }
 
 
     private fun mapRepeatModeToApp(repeatMode: Int) = when (repeatMode) {
-        ExoPlayer.REPEAT_MODE_ALL -> RepeatMode.All
-        ExoPlayer.REPEAT_MODE_ONE -> RepeatMode.One
-        ExoPlayer.REPEAT_MODE_OFF -> RepeatMode.Off
+        Player.REPEAT_MODE_ALL -> RepeatMode.All
+        Player.REPEAT_MODE_ONE -> RepeatMode.One
+        Player.REPEAT_MODE_OFF -> RepeatMode.Off
         else -> error("Unknown Repeat Mode")
     }
 
-    private val exoplayerListener = object : Player.Listener {
+    private val playerListener = object : Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) {
             if(events.contains(Player.EVENT_TIMELINE_CHANGED)) {
                 _timeline.value = getTimeline()
@@ -97,7 +96,7 @@ class ExoplayerListenerAdapter(
     }
 
     init {
-        player.addListener(exoplayerListener)
+        player.addListener(playerListener)
     }
 
 }

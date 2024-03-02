@@ -9,7 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import tel.jeelpa.musicplayer.player.AppPlayer
 import tel.jeelpa.musicplayer.player.FlowPlayerListener
-import tel.jeelpa.musicplayer.player.exoplayerimpl.ExoplayerListenerAdapter
+import tel.jeelpa.musicplayer.player.exoplayerimpl.Media3PlayerListenerAdapter
 import tel.jeelpa.musicplayer.stores.TrackerStore
 import javax.inject.Singleton
 
@@ -26,21 +26,21 @@ class PrivateAppModule {
     @Singleton
     fun providesExoplayer(
         application: Application
-    ): ExoplayerListenerAdapter {
+    ): Media3PlayerListenerAdapter {
         val exo = ExoPlayer.Builder(application).build().apply {
             playWhenReady = true
             prepare()
         }
         val alwaysBeReady = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
-                if(playbackState == ExoPlayer.STATE_IDLE){
+                if(playbackState == Player.STATE_IDLE){
                     // we want player to always be ready to play
                     exo.prepare()
                 }
             }
         }
         exo.addListener(alwaysBeReady)
-        return ExoplayerListenerAdapter(exo)
+        return Media3PlayerListenerAdapter(exo)
     }
 
     @Provides
@@ -62,13 +62,13 @@ class AppModule {
     @Provides
     @Singleton
     fun providesEventForwarder(
-        player: ExoplayerListenerAdapter
+        player: Media3PlayerListenerAdapter
     ): FlowPlayerListener = player
 
     @Provides
     @Singleton
     fun providesPlayer(
-        player: ExoplayerListenerAdapter
+        player: Media3PlayerListenerAdapter
     ): AppPlayer = player
 
 }

@@ -2,40 +2,39 @@ package tel.jeelpa.musicplayer.player.exoplayerimpl
 
 import androidx.media3.common.C
 import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
 import tel.jeelpa.musicplayer.models.EagerAppTrack
 import tel.jeelpa.musicplayer.player.AppPlayer
 import tel.jeelpa.musicplayer.player.models.Duration
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.player.models.RepeatMode
 
-open class ExoplayerImpl(
-    private val exoplayer: ExoPlayer
+open class Media3PlayerImpl(
+    private val player: Player
 ) : AppPlayer {
 
     override fun play() =
-        exoplayer.play()
+        player.play()
 
     override fun pause() =
-        exoplayer.pause()
+        player.pause()
 
     override fun stop() =
-        exoplayer.stop()
+        player.stop()
 
     override fun isPlaying(): Boolean =
-        exoplayer.isPlaying
+        player.isPlaying
 
     override fun getPlaybackState(): PlaybackState =
-        when (exoplayer.playbackState) {
-            ExoPlayer.STATE_IDLE -> PlaybackState.Idle
-            ExoPlayer.STATE_ENDED -> PlaybackState.Stopped
-            ExoPlayer.STATE_BUFFERING -> PlaybackState.Buffering
-            ExoPlayer.STATE_READY -> PlaybackState.Ready
-            else -> error("Unknown ExoPlayer State, Failed to map to app playback state")
+        when (player.playbackState) {
+            Player.STATE_IDLE -> PlaybackState.Idle
+            Player.STATE_ENDED -> PlaybackState.Stopped
+            Player.STATE_BUFFERING -> PlaybackState.Buffering
+            Player.STATE_READY -> PlaybackState.Ready
+            else -> error("Unknown Player State, Failed to map to app playback state")
         }
 
     override fun getRepeatMode(): RepeatMode =
-        when (exoplayer.repeatMode) {
+        when (player.repeatMode) {
             Player.REPEAT_MODE_OFF -> RepeatMode.Off
             Player.REPEAT_MODE_ONE -> RepeatMode.One
             Player.REPEAT_MODE_ALL -> RepeatMode.All
@@ -44,65 +43,65 @@ open class ExoplayerImpl(
 
 
     override fun getShuffle(): Boolean =
-        exoplayer.shuffleModeEnabled
+        player.shuffleModeEnabled
 
     override fun getDuration(): Duration =
-        when (val duration = exoplayer.duration) {
+        when (val duration = player.duration) {
             C.TIME_UNSET -> Duration.Unknown
             else -> Duration.Known(duration)
         }
 
     override fun getPosition(): Duration.Known =
-        Duration.Known(exoplayer.currentPosition)
+        Duration.Known(player.currentPosition)
 
     override fun setMediaItem(appTrack: EagerAppTrack) =
-        exoplayer.setMediaItem(appTrack.toMediaItem())
+        player.setMediaItem(appTrack.toMediaItem())
 
     override fun addMediaItem(appTrack: EagerAppTrack, index: Int?) =
-        if (index == null) exoplayer.addMediaItem(appTrack.toMediaItem())
-        else exoplayer.addMediaItem(index, appTrack.toMediaItem())
+        if (index == null) player.addMediaItem(appTrack.toMediaItem())
+        else player.addMediaItem(index, appTrack.toMediaItem())
 
     override fun removeMediaItem(from: Int, to: Int) =
-        exoplayer.removeMediaItems(from, to)
+        player.removeMediaItems(from, to)
 
     override fun getCurrentMediaItem(): EagerAppTrack? =
-        exoplayer.currentMediaItem?.toTrack()
+        player.currentMediaItem?.toTrack()
 
     override fun getCurrentMediaItemIndex(): Int =
-        exoplayer.currentMediaItemIndex
+        player.currentMediaItemIndex
 
     override fun getMediaItemCount(): Int =
-        exoplayer.mediaItemCount
+        player.mediaItemCount
 
     override fun getTimeline(): List<EagerAppTrack> =
-        (0 until exoplayer.mediaItemCount)
-            .map { exoplayer.getMediaItemAt(it) }
+        (0 until player.mediaItemCount)
+            .map { player.getMediaItemAt(it) }
             .map { it.toTrack() }
 
     override fun hasNextMediaItem(): Boolean =
-        exoplayer.hasNextMediaItem()
+        player.hasNextMediaItem()
 
     override fun hasPreviousMediaItem(): Boolean =
-        exoplayer.hasPreviousMediaItem()
+        player.hasPreviousMediaItem()
 
     override fun clearMediaItems() =
-        exoplayer.clearMediaItems()
+        player.clearMediaItems()
 
     override fun seekTo(positionMs: Long) =
-        exoplayer.seekTo(positionMs)
+        player.seekTo(positionMs)
 
     override fun seekToMediaItem(index: Int) {
-        exoplayer.seekTo(index, 0)
+        player.seekTo(index, 0)
     }
 
     override fun next() =
-        exoplayer.seekToNextMediaItem()
+        player.seekToNextMediaItem()
 
     override fun previous() =
-        exoplayer.seekToPreviousMediaItem()
+        player.seekToPreviousMediaItem()
 
     override fun setRepeatMode(mode: RepeatMode) {
-        exoplayer.repeatMode = when (mode) {
+        player.repeatMode = when (mode) {
             RepeatMode.Off -> Player.REPEAT_MODE_OFF
             RepeatMode.One -> Player.REPEAT_MODE_ONE
             RepeatMode.All -> Player.REPEAT_MODE_ALL
@@ -110,6 +109,6 @@ open class ExoplayerImpl(
     }
 
     override fun setShuffle(enable: Boolean) {
-        exoplayer.shuffleModeEnabled = enable
+        player.shuffleModeEnabled = enable
     }
 }
