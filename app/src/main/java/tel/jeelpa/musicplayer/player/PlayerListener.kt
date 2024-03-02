@@ -19,7 +19,7 @@ import tel.jeelpa.musicplayer.player.models.RepeatMode
 
 
 interface FlowPlayerListener {
-    fun listenToProgress(delay: Long = 1000): Flow<Float>
+    fun listenToCurrentPosition(delay: Long = 1000): Flow<Long>
 
     val isPlaying: Flow<Boolean>
 

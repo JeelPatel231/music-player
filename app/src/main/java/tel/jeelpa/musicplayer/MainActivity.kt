@@ -1,6 +1,7 @@
 package tel.jeelpa.musicplayer
 
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -18,7 +19,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPS
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
-import tel.jeelpa.musicplayer.ui.adapters.TimelineItemAdapter
 import tel.jeelpa.musicplayer.databinding.ActivityMainBinding
 import tel.jeelpa.musicplayer.databinding.BottomSheetPlayerBinding
 import tel.jeelpa.musicplayer.databinding.BottomSheetQueueBinding
@@ -26,6 +26,7 @@ import tel.jeelpa.musicplayer.databinding.FullPlayerBinding
 import tel.jeelpa.musicplayer.databinding.MiniPlayerBinding
 import tel.jeelpa.musicplayer.player.models.Duration
 import tel.jeelpa.musicplayer.player.models.PlaybackState
+import tel.jeelpa.musicplayer.ui.adapters.TimelineItemAdapter
 import tel.jeelpa.musicplayer.ui.screens.SampleFragment
 import tel.jeelpa.musicplayer.utils.BottomSheetBackPress.getBackPressedHandler
 import tel.jeelpa.musicplayer.utils.observeFlow
@@ -147,8 +148,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         expandedPlayer.expandedProgress.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            private fun getElapsedSeconds(seekBar: SeekBar): Long {
+                val progress = seekBar.progress
+                val duration = when(val dur = player.getDuration()) {
+                    is Duration.Known -> dur.length
+                    is Duration.Unknown -> return 0L
+                }
+
+                return (progress/100F * duration).toLong()
+            }
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                // Do Nothing
+                expandedPlayer.elapsedTime.text = DateUtils.formatElapsedTime(getElapsedSeconds(seekBar)/1000)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -156,19 +166,19 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                val progress = seekBar.progress
-                val duration = when(val dur = player.getDuration()) {
-                    is Duration.Known -> dur.length
-                    is Duration.Unknown -> return
-                }
-                player.seekTo((progress/100F * duration).toLong())
+                player.seekTo(getElapsedSeconds(seekBar))
                 player.play()
             }
         })
 
-        listener.listenToProgress().observeFlow(this) {
-            expandedPlayer.expandedProgress.setProgress(it.toInt(), true)
-            miniPlayer.miniPlayerProgress.setProgress(it.toInt(), true)
+        listener.listenToCurrentPosition().observeFlow(this) {
+            val dur = player.getDuration().unwrap()
+            val progress = if(dur == 0L) 0F else (it/dur.toFloat()) * 100
+            expandedPlayer.elapsedTime.text = DateUtils.formatElapsedTime(it/1000)
+            expandedPlayer.durationTime.text = DateUtils.formatElapsedTime(dur/1000)
+
+            expandedPlayer.expandedProgress.setProgress(progress.toInt(), true)
+            miniPlayer.miniPlayerProgress.setProgress(progress.toInt(), true)
         }
 
         listener.playbackState.observeFlow(this) {

@@ -26,10 +26,10 @@ class ExoplayerListenerAdapter(
     private val _shuffle = MutableStateFlow(player.shuffleModeEnabled)
     private val _timeline = MutableStateFlow(emptyList<EagerAppTrack>())
 
-    override fun listenToProgress(delay: Long): Flow<Float> = flow {
-        while (true) {
-            emit(getProgress())
-            delay(delay)
+    override fun listenToCurrentPosition(delay: Long): Flow<Long> = flow {
+        while(true) {
+            emit(player.currentPosition)
+            delay(1000)
         }
     }
 
