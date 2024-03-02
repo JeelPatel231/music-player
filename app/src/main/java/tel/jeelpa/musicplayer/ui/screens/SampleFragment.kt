@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -16,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import tel.jeelpa.musicplayer.PlayerViewModel
 import tel.jeelpa.musicplayer.databinding.FragmentHomeBinding
 import tel.jeelpa.musicplayer.databinding.LayoutHomeRowBinding
-import tel.jeelpa.musicplayer.models.toAppTrack
+import tel.jeelpa.musicplayer.models.toLazyAppTrack
 import tel.jeelpa.musicplayer.ui.adapters.MediaItemAdapter
 import tel.jeelpa.musicplayer.utils.observeFlow
 
@@ -50,7 +51,7 @@ class SampleFragment : Fragment() {
 
     private fun observeSearchFlow(query: String) {
         fragmentViewModel.search(query).observeFlow(viewLifecycleOwner) {
-            searchAdapter.submitList(it.map { a -> a.toAppTrack() })
+            searchAdapter.submitList(it.map { a -> a.toLazyAppTrack(lifecycleScope) })
         }
     }
 
