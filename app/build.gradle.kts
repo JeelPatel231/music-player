@@ -2,6 +2,10 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 
+    id("kotlin-parcelize")
+
+    id("androidx.navigation.safeargs.kotlin")
+
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
 }
@@ -44,7 +48,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.media3:media3-exoplayer:1.2.1")
 
     implementation("com.google.dagger:hilt-android:2.48.1")
     implementation(project(":common"))
@@ -58,14 +61,27 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
+    // navigation
+    val nav_version = "2.7.7"
+    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
 
+    // media session service
+    val media3_version = "1.3.0"
+    implementation("androidx.media3:media3-session:$media3_version")
+    implementation("androidx.media3:media3-exoplayer:$media3_version")
     // plugger
     implementation(project(":plugger:plugger"))
 
     // TODO: REMOVE IN RELEASE
-//    implementation(project(":ytmplugin"))
-    implementation(project(":soundcloudplugin"))
+    debugImplementation(project(":newpipeplugin"))
+    debugImplementation(project(":ytmplugin-youtubei"))
     debugImplementation("com.squareup.leakcanary:leakcanary-android:3.0-alpha-1")
+
+    // paging3
+    val paging_version = "3.2.1"
+    implementation("androidx.paging:paging-runtime-ktx:$paging_version")
+
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

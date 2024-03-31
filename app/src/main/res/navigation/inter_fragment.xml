@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/inter_fragment"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="tel.jeelpa.musicplayer.ui.screens.home.HomeFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/toAlbumFragment"
+            app:destination="@id/albumFragment" />
+        <action
+            android:id="@+id/toArtistFragment"
+            app:destination="@id/artistFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/albumFragment"
+        android:name="tel.jeelpa.musicplayer.ui.screens.album.AlbumFragment"
+        android:label="AlbumFragment" >
+        <argument android:name="albumDetails"
+            app:argType="tel.jeelpa.musicplayer.models.ItemSmallDataClass" />
+    </fragment>
+    <fragment
+        android:id="@+id/artistFragment"
+        android:name="tel.jeelpa.musicplayer.ui.screens.artist.ArtistFragment"
+        android:label="ArtistFragment" >
+        <argument android:name="artistDetails"
+            app:argType="tel.jeelpa.musicplayer.models.ItemSmallDataClass" />
+        <action
+            android:id="@+id/toAlbumFragment"
+            app:destination="@id/albumFragment" />
+    </fragment>
+</navigation>

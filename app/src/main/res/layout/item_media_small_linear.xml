@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:clipToPadding="false"
+    android:orientation="horizontal">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        tools:src="@tools:sample/avatars"
+        android:id="@+id/media_art"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="?attr/colorSurfaceContainer"
+        android:scaleType="fitCenter"
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small" />
+
+    <Space
+        android:layout_width="8dp"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    <TextView
+        tools:text="@tools:sample/lorem/random"
+        android:id="@+id/media_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:maxLines="2"
+        android:minHeight="24sp" />
+
+    <TextView
+        tools:text="@tools:sample/lorem"
+        android:id="@+id/media_artist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:lines="1"
+        android:minHeight="24sp" />
+    </LinearLayout>
+
+</LinearLayout>

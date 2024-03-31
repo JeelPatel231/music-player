@@ -1,5 +1,8 @@
 package tel.jeelpa.musicplayer.models
 
+import android.net.Uri
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -12,19 +15,11 @@ import tel.jeelpa.musicplayer.player.models.toAppMediaSource
 /**
  * Used in UI to display data
  * */
-interface BaseAppTrack {
-    val id: String
-    val name: String
-    val thumbnail: String?
-    val artist: String
-}
 
-interface LazyAppTrack: BaseAppTrack {
+interface LazyAppTrack : ItemSmallData {
     suspend fun mediaSource(): AppMediaSource
-}
 
-interface EagerAppTrack: BaseAppTrack {
-    val mediaSource: AppMediaSource
+    suspend fun getArtist(): String
 }
 
 /**
@@ -33,7 +28,7 @@ interface EagerAppTrack: BaseAppTrack {
  * and the lazy loading data is just a function
  * which gets called when needed.
  * */
-suspend fun Track.toLazyAppTrack(coroutineScope: CoroutineScope): LazyAppTrack  {
+suspend fun Track.toLazyAppTrack(coroutineScope: CoroutineScope): LazyAppTrack {
     val name = withContext(Dispatchers.IO) {
         getName()
     }
@@ -41,7 +36,7 @@ suspend fun Track.toLazyAppTrack(coroutineScope: CoroutineScope): LazyAppTrack  
         getCover()
     }
 
-    val artist = withContext(Dispatchers.IO) {
+    val artist = coroutineScope.async(Dispatchers.IO, CoroutineStart.LAZY) {
         getArtists().first().getName()
     }
 
@@ -51,23 +46,33 @@ suspend fun Track.toLazyAppTrack(coroutineScope: CoroutineScope): LazyAppTrack  
 
     return object : LazyAppTrack {
         override val id = getUrl()
-        override val name: String = name
-        override val thumbnail: String = thumbnail
-        override val artist = artist
+        override val title: String = name
+        override val avatar: String = thumbnail
 
         override suspend fun mediaSource(): AppMediaSource =
             song.await()
+
+        override suspend fun getArtist(): String =
+            artist.await()
     }
 }
 
-suspend fun LazyAppTrack.loadEager(): EagerAppTrack {
-    val loadedMediaSource = this@loadEager.mediaSource()
-
-    return object : EagerAppTrack {
-        override val mediaSource: AppMediaSource = loadedMediaSource
-        override val id: String = this@loadEager.id
-        override val name: String = this@loadEager.name
-        override val thumbnail: String? = this@loadEager.thumbnail
-        override val artist: String = this@loadEager.artist
+suspend fun LazyAppTrack.toMediaItem(): MediaItem {
+    val uri = when (val _media = mediaSource()) {
+        is AppMediaSource.HttpUrl -> _media.url
     }
+
+    val artist = getArtist()
+
+    val metaData = MediaMetadata.Builder()
+        .setArtworkUri(Uri.parse(avatar))
+        .setTitle(title)
+        .setArtist(artist)
+        .build()
+
+    return MediaItem.Builder()
+        .setMediaId(id)
+        .setUri(uri)
+        .setMediaMetadata(metaData)
+        .build()
 }

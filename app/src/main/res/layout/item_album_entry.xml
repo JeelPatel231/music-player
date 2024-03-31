@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?><!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:clipToPadding="false"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/media_index"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+        android:textColor="?attr/colorPrimary"
+        android:textStyle="bold"
+        tools:text="1" />
+
+    <Space
+        android:layout_width="8dp"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/media_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:minHeight="24sp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            tools:text="@tools:sample/lorem/random" />
+
+        <TextView
+            android:id="@+id/media_artist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:minHeight="24sp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            tools:text="@tools:sample/lorem" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/media_length"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:width="36dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        tools:text="4:20" />
+
+</LinearLayout>

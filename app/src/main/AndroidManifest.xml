@@ -4,12 +4,16 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+
 
     <application
         android:name=".MyApplication"
@@ -22,7 +26,26 @@
         android:theme="@style/Theme.MusicPlayer"
         tools:targetApi="tiramisu">
 
+        <service
+            android:name="tel.jeelpa.musicplayer.PlaybackService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService"/>
+            </intent-filter>
+        </service>
+
         <activity
+            android:name=".SendLog"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="tel.jeelpa.musicplayer.SEND_LOG" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:name=".MainActivity"
             android:exported="true">

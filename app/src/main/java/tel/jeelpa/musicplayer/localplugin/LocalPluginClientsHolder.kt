@@ -10,12 +10,13 @@ import tel.jeelpa.musicplayer.localplugin.clients.LocalArtistClient
 import tel.jeelpa.musicplayer.localplugin.clients.LocalTrackClient
 import tel.jeelpa.musicplayer.localplugin.content.LocalPluginContentResolver
 
+const val OFFLINE_EXTENSION_NAME = "tel.jeelpa.musicplayer.offline"
+
 class LocalPluginClientsHolder(
     private val resolver: LocalPluginContentResolver
 ): ClientsHolder {
 
-    override fun getName(): String =
-        "tel.jeelpa.musicplayer.offline"
+    override fun getName(): String = OFFLINE_EXTENSION_NAME
 
     override fun getHomeFeedClient(): HomeFeedClient =
         LocalPluginHomeFeedClient(resolver)

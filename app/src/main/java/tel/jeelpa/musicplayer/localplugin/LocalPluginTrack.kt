@@ -1,6 +1,9 @@
 package tel.jeelpa.musicplayer.localplugin
 
 import android.net.Uri
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import tel.jeelpa.musicplayer.common.models.AbstractMediaSource
 import tel.jeelpa.musicplayer.common.models.Album
 import tel.jeelpa.musicplayer.common.models.Artist
@@ -24,9 +27,9 @@ class LocalPluginTrack(
         return listOf(StringMediaSource(url.toString()))
     }
 
-    override suspend fun getRadio(): List<Track> =
+    override suspend fun getRadio(): Flow<PagingData<Track>> =
         /* Radio is not supported in local songs */
-        emptyList()
+        emptyFlow()
 
     override suspend fun getCover(): String = cover.toString()
 

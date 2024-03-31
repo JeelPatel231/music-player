@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import tel.jeelpa.musicplayer.common.ClientsHolder
+import tel.jeelpa.musicplayer.localplugin.OFFLINE_EXTENSION_NAME
 import tel.jeelpa.musicplayer.stores.TrackerStore
 import tel.jeelpa.plugger.PluginRepo
 
@@ -19,7 +20,7 @@ data class CurrentServiceHolder(
         val currentTracker = store.getCurrentTracker().first()
         loader.getAllPlugins().collect { list ->
             val found = list.find { it.getName() == currentTracker }
-                ?: list.find { it.getName() == "tel.jeelpa.musicplayer.offline" }!!
+                ?: list.find { it.getName() == OFFLINE_EXTENSION_NAME }!!
 
             emit(found)
         }

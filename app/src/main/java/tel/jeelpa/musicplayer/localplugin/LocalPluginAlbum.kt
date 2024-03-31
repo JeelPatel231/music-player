@@ -1,10 +1,14 @@
 package tel.jeelpa.musicplayer.localplugin
 
 import android.net.Uri
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import tel.jeelpa.musicplayer.common.models.Album
 import tel.jeelpa.musicplayer.common.models.Artist
 import tel.jeelpa.musicplayer.common.models.Track
 import tel.jeelpa.musicplayer.localplugin.content.LocalPluginContentResolver
+import tel.jeelpa.musicplayer.ui.utils.toPagedData
 
 class LocalPluginAlbum(
     private val resolver: LocalPluginContentResolver,
@@ -22,7 +26,7 @@ class LocalPluginAlbum(
 
     override suspend fun getAlbumArt(): String = art.toString()
 
-    override suspend fun getSongs(offset: Int, limit: Int): List<Track> {
-        return resolver.trackResolver.getByAlbum(id.toString())
+    override suspend fun getSongs(): Flow<PagingData<Track>> {
+        return flowOf(resolver.trackResolver.getByAlbum(id.toString()).toPagedData())
     }
 }

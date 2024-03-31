@@ -1,26 +1,33 @@
 package tel.jeelpa.musicplayer.localplugin
 
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import tel.jeelpa.musicplayer.common.clients.AlbumFeedEntry
+import tel.jeelpa.musicplayer.common.clients.ArtistFeedEntry
 import tel.jeelpa.musicplayer.common.clients.HomeFeedClient
-import tel.jeelpa.musicplayer.common.models.Album
-import tel.jeelpa.musicplayer.common.models.Artist
-import tel.jeelpa.musicplayer.common.models.Track
+import tel.jeelpa.musicplayer.common.clients.HomeFeedEntry
+import tel.jeelpa.musicplayer.common.clients.TrackFeedEntry
 import tel.jeelpa.musicplayer.localplugin.content.LocalPluginContentResolver
+import tel.jeelpa.musicplayer.ui.utils.toPagedData
 
 class LocalPluginHomeFeedClient(
     private val resolver: LocalPluginContentResolver
 ): HomeFeedClient {
-    override suspend fun getSongs(offset: Int, limit: Int): List<Track> {
-        // TODO: pagination
-        return resolver.trackResolver.getAll()
-    }
-
-    override suspend fun getAlbums(offset: Int, limit: Int): List<Album> {
-        // TODO: pagination
-        return resolver.albumResolver.getAll()
-    }
-
-    override suspend fun getArtists(count: Int, limit: Int): List<Artist> {
-        // TODO: pagination
-        return resolver.artistResolver.getAll()
+    override fun getHomeFeed(): Flow<PagingData<HomeFeedEntry>> {
+        return flowOf(PagingData.from(listOf(
+            TrackFeedEntry(
+                "Songs",
+                flowOf(resolver.trackResolver.getAll().toPagedData()),
+            ),
+            ArtistFeedEntry(
+                "Artists",
+                flowOf(resolver.artistResolver.getAll().toPagedData()),
+            ),
+            AlbumFeedEntry(
+                "Albums",
+                flowOf(resolver.albumResolver.getAll().toPagedData()),
+            )
+        )))
     }
 }

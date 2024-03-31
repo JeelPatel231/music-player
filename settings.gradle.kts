@@ -18,7 +18,6 @@ dependencyResolutionManagement {
 rootProject.name = "Music Player"
 include(":plugger:plugger")
 include(":common")
-include(":ytmplugin")
-include(":soundcloudplugin")
+include(":newpipeplugin")
 include(":app")
-include(":bandcampplugin")
+include(":ytmplugin-youtubei")

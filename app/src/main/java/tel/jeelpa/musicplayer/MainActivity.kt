@@ -8,15 +8,16 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.media3.common.C
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
 import tel.jeelpa.musicplayer.databinding.ActivityMainBinding
@@ -24,10 +25,12 @@ import tel.jeelpa.musicplayer.databinding.BottomSheetPlayerBinding
 import tel.jeelpa.musicplayer.databinding.BottomSheetQueueBinding
 import tel.jeelpa.musicplayer.databinding.FullPlayerBinding
 import tel.jeelpa.musicplayer.databinding.MiniPlayerBinding
-import tel.jeelpa.musicplayer.player.models.Duration
+import tel.jeelpa.musicplayer.player.exoplayerimpl.getProgress
+import tel.jeelpa.musicplayer.player.exoplayerimpl.getTimeline
+import tel.jeelpa.musicplayer.player.exoplayerimpl.togglePlayPause
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.ui.adapters.TimelineItemAdapter
-import tel.jeelpa.musicplayer.ui.screens.SampleFragment
+import tel.jeelpa.musicplayer.ui.utils.toPagedData
 import tel.jeelpa.musicplayer.utils.BottomSheetBackPress.getBackPressedHandler
 import tel.jeelpa.musicplayer.utils.observeFlow
 
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -55,16 +59,12 @@ class MainActivity : AppCompatActivity() {
             WindowInsetsCompat.CONSUMED
         }
 
-        val sample = SampleFragment()
-
-        supportFragmentManager.beginTransaction()
-            .replace(binding.mainActivityContainer.id, sample)
-            .commit()
+        playerViewModel.snackBarEvents.observeFlow(this) {
+            Snackbar.make(binding.root, it.msg, Snackbar.LENGTH_SHORT).show()
+        }
 
         setupMiniPlayer()
-
     }
-
 
     private fun setupMiniPlayer() {
         val bottomPlayerSheet = BottomSheetPlayerBinding.bind(binding.root)
@@ -73,22 +73,22 @@ class MainActivity : AppCompatActivity() {
         val queueSheet = BottomSheetQueueBinding.bind(bottomPlayerSheet.root)
 
         miniPlayer.playPause.setOnClickListener {
-            if (player.isPlaying()) player.pause() else player.play()
+            player.togglePlayPause()
         }
 
         expandedPlayer.expandedPlayPause.setOnClickListener {
-            if (player.isPlaying()) player.pause() else player.play()
+            player.togglePlayPause()
         }
 
         expandedPlayer.nextBtn.setOnClickListener {
-            player.next()
+            player.seekToNextMediaItem()
             // if player is paused and "next" is called,
             // it changes tracks but its still paused.
             player.play()
         }
 
         expandedPlayer.prevBtn.setOnClickListener {
-            player.previous()
+            player.seekToPreviousMediaItem()
             player.play()
         }
 
@@ -104,8 +104,20 @@ class MainActivity : AppCompatActivity() {
         val miniPlayerHeight = resources.getDimension(R.dimen.mini_player_height)
         // set the peekHeight when BottomNavBar is laid out
         binding.bottomNav.post {
+            val bottomNavBarHeight = binding.bottomNav.height
+
             bottomPlayerSheetBehavior.peekHeight =
-                (binding.bottomNav.height + miniPlayerHeight).toInt()
+                (bottomNavBarHeight + miniPlayerHeight).toInt()
+
+            listener.playbackState.observeFlow(this) {
+                if (it == PlaybackState.Idle || it == PlaybackState.Stopped) {
+                    binding.nestedScrollContainer.updatePadding(bottom = bottomNavBarHeight)
+                }
+
+                if (it == PlaybackState.Buffering && bottomPlayerSheetBehavior.state == STATE_HIDDEN) {
+                    binding.nestedScrollContainer.updatePadding(bottom = (bottomNavBarHeight + miniPlayerHeight).toInt())
+                }
+            }
         }
 
         bottomPlayerSheetBehavior
@@ -147,18 +159,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        expandedPlayer.expandedProgress.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+        expandedPlayer.expandedProgress.setOnSeekBarChangeListener(object :
+            OnSeekBarChangeListener {
             private fun getElapsedSeconds(seekBar: SeekBar): Long {
                 val progress = seekBar.progress
-                val duration = when(val dur = player.getDuration()) {
-                    is Duration.Known -> dur.length
-                    is Duration.Unknown -> return 0L
+                val duration = when (val a = player.duration) {
+                    C.TIME_UNSET -> return 0L
+                    else -> a
                 }
 
-                return (progress/100F * duration).toLong()
+                return (progress / 100F * duration).toLong()
             }
+
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                expandedPlayer.elapsedTime.text = DateUtils.formatElapsedTime(getElapsedSeconds(seekBar)/1000)
+                expandedPlayer.elapsedTime.text =
+                    DateUtils.formatElapsedTime(getElapsedSeconds(seekBar) / 1000)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -172,10 +187,10 @@ class MainActivity : AppCompatActivity() {
         })
 
         listener.listenToCurrentPosition().observeFlow(this) {
-            val dur = player.getDuration().unwrap()
-            val progress = if(dur == 0L) 0F else (it/dur.toFloat()) * 100
-            expandedPlayer.elapsedTime.text = DateUtils.formatElapsedTime(it/1000)
-            expandedPlayer.durationTime.text = DateUtils.formatElapsedTime(dur/1000)
+            val dur = player.duration
+            val progress = if (dur == C.TIME_UNSET) 0F else (it / dur.toFloat()) * 100
+            expandedPlayer.elapsedTime.text = DateUtils.formatElapsedTime(it / 1000)
+            expandedPlayer.durationTime.text = DateUtils.formatElapsedTime(dur / 1000)
 
             expandedPlayer.expandedProgress.setProgress(progress.toInt(), true)
             miniPlayer.miniPlayerProgress.setProgress(progress.toInt(), true)
@@ -202,7 +217,7 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         listener.playbackState.observeFlow(this) {
-            if(it == PlaybackState.Buffering) {
+            if (it == PlaybackState.Buffering) {
                 expandedPlayer.expandedLoadingIndicator.visibility = View.VISIBLE
                 expandedPlayer.expandedPlayPause.visibility = View.GONE
                 ///
@@ -218,9 +233,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         listener.currentMediaItem.filterNotNull().observeFlow(this) {
-            val thumb = it.thumbnail
-            val artist = it.artist
-            val name = it.name
+            val thumb = it.mediaMetadata.artworkUri
+            val artist = it.mediaMetadata.artist
+            val name = it.mediaMetadata.title
 
             expandedPlayer.expandedAlbumArt.load(thumb)
             miniPlayer.albumArt.load(thumb)
@@ -240,28 +255,31 @@ class MainActivity : AppCompatActivity() {
             expandedPlayer.prevBtn.isEnabled = player.hasPreviousMediaItem()
 
             // update currentPlaying when track is changed
-            val currentPlaying = player.getCurrentMediaItemIndex()
-            val mapped = player.getTimeline().mapIndexed { idx, track -> Pair(track, idx == currentPlaying) }
-            timelineAdapter.submitList(mapped)
+            val currentPlaying = player.currentMediaItemIndex
+            val mapped =
+                player.getTimeline().mapIndexed { idx, track -> Pair(track, idx == currentPlaying) }
+            // TODO: dont use paging here
+            timelineAdapter.submitData(mapped.toPagedData())
         }
 
         listener.timeline.observeFlow(this) { tracks ->
             expandedPlayer.nextBtn.isEnabled = player.hasNextMediaItem()
             expandedPlayer.prevBtn.isEnabled = player.hasPreviousMediaItem()
 
-            val currentPlaying = player.getCurrentMediaItemIndex()
+            val currentPlaying = player.currentMediaItemIndex
             val mapped = tracks.mapIndexed { idx, track -> Pair(track, idx == currentPlaying) }
-            timelineAdapter.submitList(mapped)
+            // TODO: dont use paging here
+            timelineAdapter.submitData(mapped.toPagedData())
         }
 
         listener.isPlaying.observeFlow(this) {
             val btnImage =
                 if (it) R.drawable.round_pause_24 else R.drawable.round_play_arrow_24
-            val newDrawable =
-                ResourcesCompat.getDrawable(resources, btnImage, theme)
+//            val newDrawable =
+//                ResourcesCompat.getDrawable(resources, btnImage, theme)
 
-            miniPlayer.playPause.background = newDrawable
-            expandedPlayer.expandedPlayPause.background = newDrawable
+            miniPlayer.playPause.setIconResource(btnImage)
+            expandedPlayer.expandedPlayPause.setIconResource(btnImage)
         }
 
         bottomPlayerSheetBehavior.addBottomSheetCallback(handleScrollCallback)

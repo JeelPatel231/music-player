@@ -1,36 +1,30 @@
 package tel.jeelpa.musicplayer.player.exoplayerimpl
 
-import android.net.Uri
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import tel.jeelpa.musicplayer.models.EagerAppTrack
-import tel.jeelpa.musicplayer.player.models.AppMediaSource
+import androidx.media3.common.Player
 
 
-fun EagerAppTrack.toMediaItem(): MediaItem {
-    val uri = when(val _media = mediaSource) {
-        is AppMediaSource.HttpUrl -> _media.url
-    }
-    val metaData = MediaMetadata.Builder()
-        .setArtworkUri(Uri.parse(thumbnail))
-        .setTitle(name)
-        .setArtist(artist)
-        .build()
-
-    return MediaItem.Builder()
-        .setMediaId(id)
-        .setUri(uri)
-        .setMediaMetadata(metaData)
-        .build()
+fun Player.getProgress() = when(duration) {
+    C.TIME_UNSET -> 0F
+    else -> currentPosition/duration.toFloat() * 100
 }
 
-fun MediaItem.toTrack(): EagerAppTrack {
-    val currMeta = mediaMetadata
-    return object : EagerAppTrack {
-        override val id = mediaId
-        override val name = (currMeta.displayTitle ?: currMeta.title!!).toString()
-        override val thumbnail = currMeta.artworkUri.toString()
-        override val artist = currMeta.artist!!.toString()
-        override val mediaSource = AppMediaSource.HttpUrl(localConfiguration!!.uri.toString())
-    }
-}
+fun Player.getTimeline() = (0 until mediaItemCount).map { getMediaItemAt(it) }
+
+fun Player.togglePlayPause() = if(isPlaying) pause() else play()
+
+////
+
+
+val MediaItem.title
+    get() = mediaMetadata.title ?: mediaMetadata.displayTitle ?: "Unknown Title"
+
+val MediaItem.artist
+    get() = mediaMetadata.artist ?: "Unknown Artist"
+
+val MediaItem.id
+    get() = mediaId
+
+val MediaItem.thumbnail
+    get() = mediaMetadata.artworkUri

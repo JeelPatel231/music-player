@@ -7,23 +7,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
-import tel.jeelpa.musicplayer.models.EagerAppTrack
 import tel.jeelpa.musicplayer.player.FlowPlayerListener
 import tel.jeelpa.musicplayer.player.models.PlaybackState
 import tel.jeelpa.musicplayer.player.models.RepeatMode
 
 class Media3PlayerListenerAdapter(
     private val player: Player
-) :
-/* AppPlayer Implementation */ Media3PlayerImpl(player),
-/* FlowListener Implementation */ FlowPlayerListener {
+) : FlowPlayerListener {
 
     private val _isPlaying = MutableStateFlow(player.isPlaying)
     private val _playbackState = MutableStateFlow(mapExoPlaybackStateToApp(player.playbackState))
-    private val _currentMediaItem = MutableStateFlow<EagerAppTrack?>(null)
+    private val _currentMediaItem = MutableStateFlow<MediaItem?>(null)
     private val _repeatMode = MutableStateFlow(mapRepeatModeToApp(player.repeatMode))
     private val _shuffle = MutableStateFlow(player.shuffleModeEnabled)
-    private val _timeline = MutableStateFlow(emptyList<EagerAppTrack>())
+    private val _timeline = MutableStateFlow(emptyList<MediaItem>())
 
     override fun listenToCurrentPosition(delay: Long): Flow<Long> = flow {
         while(true) {
@@ -57,10 +54,11 @@ class Media3PlayerListenerAdapter(
         else -> error("Unknown Repeat Mode")
     }
 
+
     private val playerListener = object : Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) {
             if(events.contains(Player.EVENT_TIMELINE_CHANGED)) {
-                _timeline.value = getTimeline()
+                _timeline.value = player.getTimeline()
             }
         }
 
@@ -82,7 +80,7 @@ class Media3PlayerListenerAdapter(
         }
 
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-            _currentMediaItem.value = mediaItem?.toTrack()
+            _currentMediaItem.value = mediaItem
         }
 
         override fun onPositionDiscontinuity(
